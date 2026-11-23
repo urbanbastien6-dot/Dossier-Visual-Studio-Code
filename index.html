@@ -3,104 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVIGNON CITY - Open World 3D</title>
+    <title>AVIGNON CITY — Édition Réalisme 3D</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <!-- ÉCRAN DE DÉMARRAGE -->
-    <div id="start-screen" class="overlay-screen">
-        <div class="title-container">
-            <h1 class="game-title">AVIGNON CITY</h1>
-            <p class="game-subtitle">ÉDITION PROVENÇALE • MONDE OUVERT 3D</p>
-        </div>
-        <div class="controls-guide">
-            <div class="guide-col">
-                <h3>À PIED</h3>
-                <p><span>Z Q S D</span> Déplacer</p>
-                <p><span>SHIFT</span> Courir</p>
-                <p><span>ESPACE</span> Sauter</p>
-                <p><span>SOURIS</span> Caméra (Clic pour verrouiller)</p>
-                <p><span>E</span> Entrer véhicule / Parler / Sauvegarder</p>
-                <p><span>F</span> Attaquer / Interagir</p>
+    <!-- =====================================================================
+         MENU PRINCIPAL AAA (CAMÉRA 3D SUR AVIGNON EN TEMPS RÉEL)
+         ===================================================================== -->
+    <div id="main-menu" class="menu-overlay">
+        <div class="menu-vignette"></div>
+        <div class="menu-sidebar">
+            <div class="brand-header">
+                <div class="brand-tag">VAUCLUSE • OPEN WORLD 3D</div>
+                <h1 class="brand-title">AVIGNON<span>CITY</span></h1>
+                <p class="brand-version">BUILD 3.0 • RÉALISME &amp; ACTION</p>
             </div>
-            <div class="guide-col">
-                <h3>VÉHICULE & SYSTÈME</h3>
-                <p><span>Z / S</span> Accélérer / Freiner-Reculer</p>
-                <p><span>Q / D</span> Tourner</p>
-                <p><span>ESPACE</span> Frein à main</p>
-                <p><span>E</span> Sortir du véhicule</p>
-                <p><span>ÉCHAP / P</span> Menu Pause & Graphismes</p>
+
+            <nav class="menu-nav">
+                <button class="nav-item active" data-tab="tab-play">
+                    <span class="nav-icon">▶</span> JOUER
+                </button>
+                <button class="nav-item" data-tab="tab-missions">
+                    <span class="nav-icon">★</span> MISSIONS (100% ACCESSIBLES)
+                </button>
+                <button class="nav-item" data-tab="tab-arsenal">
+                    <span class="nav-icon">⚔</span> ARMES &amp; ÉQUIPEMENT
+                </button>
+                <button class="nav-item" data-tab="tab-controls">
+                    <span class="nav-icon">⌨</span> COMMANDES
+                </button>
+                <button class="nav-item" data-tab="tab-settings">
+                    <span class="nav-icon">⚙</span> GRAPHISMES &amp; MÉTÉO
+                </button>
+            </nav>
+
+            <div class="menu-footer">
+                <div id="save-status-badge">AUCUNE SAUVEGARDE</div>
             </div>
         </div>
-        <button id="btn-play" class="btn-primary">LANCER L'EXPÉRIENCE</button>
+
+        <div class="menu-content-area">
+            <!-- ONGLET JOUER -->
+            <div id="tab-play" class="menu-tab active">
+                <div class="hero-card">
+                    <h2>AVIGNON EN MONDE OUVERT</h2>
+                    <p>Parcourez les routes d'Avignon, l'Intra-Muros, le Palais des Papes, le Pont Saint-Bénézet, la Gare Centre, la Gare TGV et les zones commerciales. Prenez le volant, écrasez les menaces sur votre passage ou ramassez des armes au sol pour accomplir des missions vérifiées sur la carte.</p>
+                    <div class="hero-stats">
+                        <div class="stat-box"><span>ARGENT</span><strong id="menu-stat-money">1 500 €</strong></div>
+                        <div class="stat-box"><span>MISSIONS</span><strong id="menu-stat-missions">0 / 4</strong></div>
+                        <div class="stat-box"><span>ARMES DÉBLOQUÉES</span><strong id="menu-stat-weapons">1 / 4</strong></div>
+                    </div>
+                    <div class="hero-buttons">
+                        <button id="btn-start-new" class="btn-cta">NOUVELLE PARTIE</button>
+                        <button id="btn-continue" class="btn-outline hidden">CONTINUER</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET MISSIONS -->
+            <div id="tab-missions" class="menu-tab">
+                <div class="panel-card">
+                    <h2>CONTRATS EN VILLE</h2>
+                    <p class="panel-sub">Toutes les étapes sont placées sur des zones praticables d'Avignon. Cliquez sur une mission pour l'activer immédiatement :</p>
+                    <div id="mission-list-container" class="mission-grid"></div>
+                </div>
+            </div>
+
+            <!-- ONGLET ARSENAL -->
+            <div id="tab-arsenal" class="menu-tab">
+                <div class="panel-card">
+                    <h2>ARMES AU SOL &amp; ÉQUIPEMENT</h2>
+                    <p class="panel-sub">Ramassez les armes brillantes au sol en marchant dessus, ou utilisez <strong>[1] [2] [3] [4]</strong> / molette pour changer d'arme :</p>
+                    <div class="arsenal-grid">
+                        <div class="weapon-card">
+                            <div class="w-badge">SLOT 1 • CORPS À CORPS</div>
+                            <h3>Poings &amp; Coups Rapides</h3>
+                            <p>Toujours disponible. <strong>[Clic Gauche]</strong> ou <strong>[F]</strong>.</p>
+                        </div>
+                        <div class="weapon-card">
+                            <div class="w-badge">SLOT 2 • PISTOLET</div>
+                            <h3>Pistolet 9mm</h3>
+                            <p>Au sol : Place de l'Horloge, Parvis Palais, Gare Centre.</p>
+                        </div>
+                        <div class="weapon-card">
+                            <div class="w-badge">SLOT 3 • MITRAILLETTE</div>
+                            <h3>SMG Vaucluse</h3>
+                            <p>Au sol : Entrée du Pont d'Avignon, Gare TGV, Zone Sud.</p>
+                        </div>
+                        <div class="weapon-card">
+                            <div class="w-badge">SLOT 4 • FUSIL D'ASSAUT</div>
+                            <h3>Carabine Tactique</h3>
+                            <p>Au sol : Rocher des Doms, Carrefour Est, Zone Commerciale.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET COMMANDES -->
+            <div id="tab-controls" class="menu-tab">
+                <div class="panel-card">
+                    <h2>COMMANDES DU JEU</h2>
+                    <div class="controls-columns">
+                        <div>
+                            <h4>PERSONNAGE &amp; ARMES</h4>
+                            <ul class="key-list">
+                                <li><span>Z Q S D</span> Déplacement</li>
+                                <li><span>SHIFT</span> Courir</li>
+                                <li><span>ESPACE</span> Sauter</li>
+                                <li><span>SOURIS</span> Caméra (Clic pour verrouiller)</li>
+                                <li><span>CLIC G / F</span> Tirer / Frapper</li>
+                                <li><span>1 / 2 / 3 / 4</span> Choisir l'arme</li>
+                                <li><span>R</span> Recharger</li>
+                                <li><span>E</span> Véhicule / Parler / Sauvegarder</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>CONDUITE &amp; SYSTÈME</h4>
+                            <ul class="key-list">
+                                <li><span>Z / S</span> Accélérer / Freiner &amp; Reculer</li>
+                                <li><span>Q / D</span> Tourner</li>
+                                <li><span>ESPACE</span> Frein à main</li>
+                                <li><span>E</span> Sortir du véhicule</li>
+                                <li><span>ÉCHAP / P</span> Menu Pause</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET PARAMÈTRES -->
+            <div id="tab-settings" class="menu-tab">
+                <div class="panel-card">
+                    <h2>PARAMÈTRES GRAPHIQUES</h2>
+                    <div class="setting-item">
+                        <div>
+                            <strong>Qualité Graphique &amp; Ombres</strong>
+                            <span>Ombres dynamiques PCF et résolution de rendu</span>
+                        </div>
+                        <select id="menu-gfx-quality">
+                            <option value="low">Performance</option>
+                            <option value="medium">Équilibré</option>
+                            <option value="high" selected>Ultra AAA</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <strong>Météo &amp; Lumière</strong>
+                            <span>Cycle naturel ou ambiance forcée</span>
+                        </div>
+                        <select id="menu-weather">
+                            <option value="auto" selected>Cycle Automatique</option>
+                            <option value="sunny">Soleil Provençal</option>
+                            <option value="sunset">Coucher de Soleil</option>
+                            <option value="rain">Pluie</option>
+                            <option value="night">Nuit</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <strong>Circulation Routière</strong>
+                            <span>Vitesse et activité du trafic</span>
+                        </div>
+                        <select id="menu-traffic">
+                            <option value="low">Calme</option>
+                            <option value="normal" selected>Standard</option>
+                            <option value="high">Dense</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- MENU PAUSE & PARAMÈTRES -->
-    <div id="pause-screen" class="overlay-screen hidden">
-        <div class="pause-panel">
+    <!-- =====================================================================
+         MENU PAUSE
+         ===================================================================== -->
+    <div id="pause-screen" class="menu-overlay hidden">
+        <div class="pause-modal">
             <h2>PAUSE — AVIGNON CITY</h2>
-            
-            <div class="settings-group">
-                <h3>PARAMÈTRES GRAPHIQUES & MONDE</h3>
-                <div class="setting-row">
-                    <label for="gfx-quality">Qualité Graphique & Ombres</label>
-                    <select id="gfx-quality">
-                        <option value="low">Performance (Sans ombres)</option>
-                        <option value="medium">Équilibré (Ombres moyennes)</option>
-                        <option value="high" selected>Cinématique AAA (Ombres HD + Reflets)</option>
-                    </select>
-                </div>
-                <div class="setting-row">
-                    <label for="weather-select">Météo Dynamique</label>
-                    <select id="weather-select">
-                        <option value="auto" selected>Automatique (Cycle Provence)</option>
-                        <option value="sunny">Soleil Provençal (Ciel Bleu)</option>
-                        <option value="sunset">Heure Dorée (Coucher de Soleil)</option>
-                        <option value="rain">Orage Méditerranéen (Pluie)</option>
-                        <option value="night">Nuit Étoilée</option>
-                    </select>
-                </div>
-                <div class="setting-row">
-                    <label for="traffic-density">Densité Circulation & Piétons</label>
-                    <select id="traffic-density">
-                        <option value="low">Faible</option>
-                        <option value="normal" selected>Normale</option>
-                        <option value="high">Dense</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="pause-actions">
-                <button id="btn-resume" class="btn-primary">REPRENDRE</button>
-                <button id="btn-save-now" class="btn-secondary">SAUVEGARDER LA PARTIE</button>
-                <button id="btn-respawn" class="btn-secondary">SE TÉLÉPORTER AU CENTRE</button>
+            <div class="pause-mission-recap" id="pause-mission-info">Mission en cours</div>
+            <div class="pause-grid">
+                <button id="btn-resume" class="btn-cta">REPRENDRE</button>
+                <button id="btn-save-now" class="btn-outline">SAUVEGARDER</button>
+                <button id="btn-respawn" class="btn-outline">RETOUR PLACE DE L'HORLOGE</button>
+                <button id="btn-back-main-menu" class="btn-danger">MENU PRINCIPAL</button>
             </div>
         </div>
     </div>
 
-    <!-- HUD PRINCIPAL -->
+    <!-- =====================================================================
+         HUD IN-GAME
+         ===================================================================== -->
     <div id="hud" class="hidden">
-        <!-- HAUT GAUCHE : MISSIONS & LIEU -->
         <div id="hud-top-left">
             <div id="district-badge">PALAIS DES PAPES</div>
             <div id="mission-box">
-                <div class="mission-header">
-                    <span id="mission-type">MISSION PRINCIPALE</span>
-                    <span id="mission-reward">+500 €</span>
+                <div class="mission-top">
+                    <span id="mission-step-tag">ÉTAPE 1/2</span>
+                    <span id="mission-reward">+800 €</span>
                 </div>
-                <div id="mission-title">Bienvenue en Cité Papale</div>
-                <div id="mission-desc">Rejoignez le point lumineux devant le Palais des Papes.</div>
+                <div id="mission-title">Mission</div>
+                <div id="mission-desc">Objectif</div>
+                <div id="mission-progress-bar"><div id="mission-progress-fill"></div></div>
             </div>
         </div>
 
-        <!-- HAUT DROITE : ARGENT, HEURE, INDICE DE RECHERCHE -->
         <div id="hud-top-right">
             <div id="clock-weather">
-                <span id="game-time">14:30</span> • <span id="game-weather">Soleil</span>
+                <span id="game-time">15:00</span> • <span id="game-weather">Soleil Provençal</span>
             </div>
-            <div id="money-display">1 250 €</div>
+            <div id="money-display">1 500 €</div>
             <div id="wanted-stars">
                 <span class="star" data-level="1">★</span>
                 <span class="star" data-level="2">★</span>
@@ -108,210 +222,107 @@
                 <span class="star" data-level="4">★</span>
                 <span class="star" data-level="5">★</span>
             </div>
+            <div id="weapon-hud">
+                <div id="weapon-name">POINGS</div>
+                <div id="weapon-ammo">∞</div>
+            </div>
         </div>
 
-        <!-- CENTRE : NOTIFICATIONS & INTERACTIONS -->
-        <div id="notification-banner" class="hidden">Mission Accomplie ! +500 €</div>
-        <div id="interaction-prompt" class="hidden">Appuyez sur <span>[E]</span> pour interagir</div>
+        <div id="notification-banner" class="hidden"></div>
+        <div id="dialogue-box" class="hidden">
+            <div id="dialogue-speaker">CONTACT</div>
+            <div id="dialogue-text">...</div>
+        </div>
+        <div id="interaction-prompt" class="hidden">Appuyez sur <span>[E]</span></div>
         <div id="crosshair">+</div>
 
-        <!-- BAS GAUCHE : MINIMAP & BARRES DE STATUT -->
         <div id="hud-bottom-left">
             <div id="minimap-wrapper">
                 <canvas id="minimap" width="200" height="200"></canvas>
                 <div class="minimap-north">N</div>
             </div>
             <div id="status-bars">
-                <div class="bar-container">
-                    <div id="health-bar" class="bar-fill"></div>
-                </div>
-                <div class="bar-container">
-                    <div id="stamina-bar" class="bar-fill"></div>
-                </div>
+                <div class="bar-container"><div id="health-bar" class="bar-fill"></div></div>
+                <div class="bar-container"><div id="stamina-bar" class="bar-fill"></div></div>
+            </div>
+            <div id="weapon-slots">
+                <div class="w-slot active" data-slot="0">1: Poings</div>
+                <div class="w-slot locked" data-slot="1">2: ---</div>
+                <div class="w-slot locked" data-slot="2">3: ---</div>
+                <div class="w-slot locked" data-slot="3">4: ---</div>
             </div>
         </div>
 
-        <!-- BAS DROITE : COMPTEUR DE VITESSE (VÉHICULE) -->
         <div id="hud-bottom-right" class="hidden">
             <div id="speedometer">
                 <span id="speed-value">0</span>
                 <span id="speed-unit">KM/H</span>
             </div>
-            <div id="vehicle-name">CITADINE PROVENÇALE</div>
+            <div id="vehicle-name">VÉHICULE</div>
         </div>
     </div>
 
     <script>
     /**
-     * AVIGNON CITY - MOTEUR DE JEU OPEN WORLD 3D
-     * Architecture modulaire intégrée : Génération Procédurale Avignon, Textures Canvas,
-     * Physique Véhicules & Piétons, IA Circulation/Police, Missions, Cycle Jour/Nuit & Météo.
+     * AVIGNON CITY 3.0 — MOTEUR 3D OPEN WORLD
+     * - Personnages humanoïdes anatomiques articulés (tête, cou, épaules, buste, bras, mains, jambes, chaussures, cheveux)
+     * - Réseau routier complet avec voies, bordures/trottoirs, passages piétons et feux
+     * - Écrasement de PNJ/ennemis par les véhicules avec projection physique & récompense/étoiles
+     * - Armes au sol multiples + balistique + rechargement
+     * - Missions 100% vérifiées sur des coordonnées accessibles
      */
 
-    // =========================================================================
-    // 1. CONFIGURATION & ÉTAT GLOBAL DU JEU
-    // =========================================================================
     const GAME_CONFIG = {
-        worldSize: 1200,
         gravity: -28,
-        playerSpeed: 8,
-        sprintSpeed: 15,
-        jumpForce: 11,
-        cameraDistance: 6.5,
-        cameraHeight: 2.6,
-        carCameraDistance: 9.5,
-        carCameraHeight: 3.8
+        playerSpeed: 8.8,
+        sprintSpeed: 15.8,
+        jumpForce: 11.5,
+        cameraDistance: 6.2,
+        cameraHeight: 2.5,
+        carCameraDistance: 9.8,
+        carCameraHeight: 3.9
     };
 
+    const WEAPON_DEFS = [
+        { id: 'fists', name: 'POINGS', slot: 0, damage: 30, fireRate: 0.35, range: 2.8, maxClip: Infinity, color: 0xffffff },
+        { id: 'pistol', name: 'PISTOLET 9MM', slot: 1, damage: 50, fireRate: 0.28, maxClip: 15, color: 0x38bdf8 },
+        { id: 'smg', name: 'SMG VAUCLUSE', slot: 2, damage: 32, fireRate: 0.1, maxClip: 30, color: 0xf59e0b },
+        { id: 'rifle', name: 'CARABINE TACTIQUE', slot: 3, damage: 65, fireRate: 0.16, maxClip: 25, color: 0xef4444 }
+    ];
+
     const GameState = {
-        started: false,
+        inMenu: true,
         paused: false,
-        money: 1250,
+        money: 1500,
         health: 100,
         stamina: 100,
         wantedLevel: 0,
         wantedTimer: 0,
-        timeOfDay: 14.5, // 14h30
+        timeOfDay: 15.0,
         weatherMode: 'auto',
-        currentWeather: 'sunny',
-        gfxQuality: 'high',
+        currentWeather: 'Soleil Provençal',
         trafficMultiplier: 1.0,
         inVehicle: null,
-        currentDistrict: 'Centre Historique',
-        activeMissionIndex: 0,
-        missionProgress: 0,
-        sideMissionActive: false,
-        sideMissionTarget: null,
-        sideMissionReward: 0
+        currentDistrict: 'Palais des Papes',
+        currentMissionIdx: 0,
+        currentStepIdx: 0,
+        missionTimer: 0,
+        completedMissions: [],
+        unlockedWeapons: [true, false, false, false],
+        ammoReserve: [Infinity, 60, 150, 120],
+        ammoClip: [Infinity, 15, 30, 25],
+        currentWeaponSlot: 0,
+        fireCooldown: 0
     };
 
     // =========================================================================
-    // 2. GÉNÉRATEUR DE TEXTURES PROCÉDURALES RÉALISTES (PBR / CANVAS)
+    // 1. TEXTURES PROCÉDURALES DÉTAILLÉES
     // =========================================================================
     const Textures = {};
 
-    function createProceduralTextures() {
-        // 1. Pierre calcaire dorée d'Avignon (Palais des Papes, Remparts)
-        Textures.limestone = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#d8c59e';
-            ctx.fillRect(0, 0, w, h);
-            // Blocs de pierre
-            const rows = 12, cols = 6;
-            const bw = w / cols, bh = h / rows;
-            for (let r = 0; r < rows; r++) {
-                const offset = (r % 2) * (bw * 0.5);
-                for (let c = -1; c <= cols; c++) {
-                    const shade = 205 + Math.floor(Math.random() * 25);
-                    ctx.fillStyle = `rgb(${shade}, ${shade - 18}, ${shade - 52})`;
-                    ctx.fillRect(c * bw + offset + 2, r * bh + 2, bw - 4, bh - 4);
-                }
-            }
-            addNoise(ctx, w, h, 18);
-        }, 4, 4);
-
-        // 2. Façade Provençale (Enduit Ocre / Terre de Sienne + Fenêtres)
-        Textures.provenceFacade = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#e3b076';
-            ctx.fillRect(0, 0, w, h);
-            addNoise(ctx, w, h, 14);
-            // Fenêtres avec volets provençaux bleu lavande / vert sauge
-            const cols = 3, rows = 3;
-            const cw = w / cols, ch = h / rows;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const x = c * cw + cw * 0.25;
-                    const y = r * ch + ch * 0.2;
-                    const fw = cw * 0.5, fh = ch * 0.55;
-                    // Volets
-                    ctx.fillStyle = '#5a7d7c';
-                    ctx.fillRect(x - fw * 0.35, y, fw * 0.32, fh);
-                    ctx.fillRect(x + fw * 1.03, y, fw * 0.32, fh);
-                    // Vitre sombre
-                    ctx.fillStyle = '#1f2933';
-                    ctx.fillRect(x, y, fw, fh);
-                    // Reflet vitre
-                    ctx.fillStyle = 'rgba(180, 215, 240, 0.25)';
-                    ctx.beginPath();
-                    ctx.moveTo(x, y); ctx.lineTo(x + fw, y); ctx.lineTo(x, y + fh);
-                    ctx.fill();
-                }
-            }
-        }, 2, 2);
-
-        // 3. Façade Moderne / Gare TGV / Zone Commerciale
-        Textures.modernGlass = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#2b3a4a';
-            ctx.fillRect(0, 0, w, h);
-            const cols = 6, rows = 6;
-            const cw = w / cols, ch = h / rows;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    ctx.fillStyle = (r + c) % 3 === 0 ? '#5c8ab8' : '#3a5d7c';
-                    ctx.fillRect(c * cw + 4, r * ch + 4, cw - 8, ch - 8);
-                }
-            }
-        }, 3, 2);
-
-        // 4. Asphalte & Routes avec marquage
-        Textures.road = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#2c2f33';
-            ctx.fillRect(0, 0, w, h);
-            addNoise(ctx, w, h, 20);
-            // Lignes blanches latérales
-            ctx.fillStyle = '#e0e0e0';
-            ctx.fillRect(18, 0, 10, h);
-            ctx.fillRect(w - 28, 0, 10, h);
-            // Pointillés centraux
-            ctx.fillStyle = '#f2c94c';
-            for (let y = 0; y < h; y += 64) {
-                ctx.fillRect(w / 2 - 4, y + 10, 8, 34);
-            }
-        }, 1, 20);
-
-        // 5. Pavés historiques (Place de l'Horloge / Centre)
-        Textures.cobblestone = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#9c9283';
-            ctx.fillRect(0, 0, w, h);
-            const size = 32;
-            for (let y = 0; y < h; y += size) {
-                for (let x = 0; x < w; x += size) {
-                    const shade = 145 + Math.floor(Math.random() * 35);
-                    ctx.fillStyle = `rgb(${shade}, ${shade - 8}, ${shade - 18})`;
-                    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
-                }
-            }
-        }, 25, 25);
-
-        // 6. Herbe & Garrigue Provençale (Rocher des Doms)
-        Textures.grass = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#5a7838';
-            ctx.fillRect(0, 0, w, h);
-            for (let i = 0; i < 6000; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? '#6e8f44' : '#466129';
-                ctx.fillRect(Math.random() * w, Math.random() * h, 3, 6);
-            }
-        }, 30, 30);
-
-        // 7. Eau du Rhône
-        Textures.water = generateCanvasTexture(512, 512, (ctx, w, h) => {
-            ctx.fillStyle = '#1e5f74';
-            ctx.fillRect(0, 0, w, h);
-            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 80; i++) {
-                const y = Math.random() * h;
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.bezierCurveTo(w * 0.3, y - 10, w * 0.7, y + 10, w, y);
-                ctx.stroke();
-            }
-        }, 12, 30);
-    }
-
     function generateCanvasTexture(w, h, drawFn, repeatX = 1, repeatY = 1) {
         const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
+        canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext('2d');
         drawFn(ctx, w, h);
         const tex = new THREE.CanvasTexture(canvas);
@@ -334,49 +345,135 @@
         ctx.putImageData(imgData, 0, 0);
     }
 
+    function createProceduralTextures() {
+        Textures.limestone = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#dec99f'; ctx.fillRect(0, 0, w, h);
+            const rows = 14, cols = 7, bw = w / cols, bh = h / rows;
+            for (let r = 0; r < rows; r++) {
+                const offset = (r % 2) * (bw * 0.5);
+                for (let c = -1; c <= cols; c++) {
+                    const s = 200 + Math.floor(Math.random() * 30);
+                    ctx.fillStyle = `rgb(${s}, ${s - 18}, ${s - 50})`;
+                    ctx.fillRect(c * bw + offset + 2, r * bh + 2, bw - 4, bh - 4);
+                }
+            }
+            addNoise(ctx, w, h, 20);
+        }, 4, 4);
+
+        Textures.provenceFacade = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#e5b378'; ctx.fillRect(0, 0, w, h);
+            addNoise(ctx, w, h, 15);
+            const cols = 3, rows = 3, cw = w / cols, ch = h / rows;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = c * cw + cw * 0.24, y = r * ch + ch * 0.2;
+                    const fw = cw * 0.52, fh = ch * 0.56;
+                    // Appui de fenêtre en pierre
+                    ctx.fillStyle = '#e8d8b8';
+                    ctx.fillRect(x - 4, y + fh, fw + 8, 10);
+                    // Volets provençaux
+                    ctx.fillStyle = '#4f7776';
+                    ctx.fillRect(x - fw * 0.36, y, fw * 0.33, fh);
+                    ctx.fillRect(x + fw * 1.03, y, fw * 0.33, fh);
+                    // Vitre
+                    ctx.fillStyle = '#1b2631';
+                    ctx.fillRect(x, y, fw, fh);
+                }
+            }
+        }, 2, 2);
+
+        Textures.modernGlass = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, w, h);
+            const cols = 6, rows = 6, cw = w / cols, ch = h / rows;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    ctx.fillStyle = (r + c) % 2 === 0 ? '#4676a6' : '#315478';
+                    ctx.fillRect(c * cw + 4, r * ch + 4, cw - 8, ch - 8);
+                }
+            }
+        }, 3, 2);
+
+        Textures.road = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#25282c'; ctx.fillRect(0, 0, w, h);
+            addNoise(ctx, w, h, 24);
+            // Rives blanches
+            ctx.fillStyle = '#f1f5f9';
+            ctx.fillRect(16, 0, 10, h);
+            ctx.fillRect(w - 26, 0, 10, h);
+            // Axe central jaune
+            ctx.fillStyle = '#eab308';
+            for (let y = 0; y < h; y += 56) {
+                ctx.fillRect(w / 2 - 4, y + 8, 8, 30);
+            }
+        }, 1, 24);
+
+        Textures.cobblestone = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#8f8577'; ctx.fillRect(0, 0, w, h);
+            const size = 28;
+            for (let y = 0; y < h; y += size) {
+                for (let x = 0; x < w; x += size) {
+                    const s = 140 + Math.floor(Math.random() * 40);
+                    ctx.fillStyle = `rgb(${s}, ${s - 10}, ${s - 20})`;
+                    ctx.fillRect(x + 2, y + 2, size - 4, size - 4);
+                }
+            }
+        }, 28, 28);
+
+        Textures.grass = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#537332'; ctx.fillRect(0, 0, w, h);
+            for (let i = 0; i < 7000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#688c3e' : '#3f5c24';
+                ctx.fillRect(Math.random() * w, Math.random() * h, 3, 6);
+            }
+        }, 32, 32);
+
+        Textures.water = generateCanvasTexture(512, 512, (ctx, w, h) => {
+            ctx.fillStyle = '#19586e'; ctx.fillRect(0, 0, w, h);
+            ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.lineWidth = 2;
+            for (let i = 0; i < 90; i++) {
+                const y = Math.random() * h;
+                ctx.beginPath(); ctx.moveTo(0, y);
+                ctx.bezierCurveTo(w * 0.3, y - 12, w * 0.7, y + 12, w, y);
+                ctx.stroke();
+            }
+        }, 12, 32);
+    }
+
     // =========================================================================
-    // 3. INITIALISATION THREE.JS, ÉCLAIRAGE & CIEL CINÉMATOGRAPHIQUE
+    // 2. SCÈNE THREE.JS & LUMIÈRE
     // =========================================================================
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xd8e6f3, 0.0014);
+    scene.fog = new THREE.FogExp2(0xd2e4f5, 0.0013);
 
-    const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.4, 900);
+    const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.4, 950);
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.18;
     document.body.appendChild(renderer.domElement);
 
-    // Lumières
-    const hemiLight = new THREE.HemisphereLight(0xfff5e4, 0x4a5568, 0.75);
+    const hemiLight = new THREE.HemisphereLight(0xfff6e5, 0x3d4c5c, 0.8);
     scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff0d4, 1.4);
+    const sunLight = new THREE.DirectionalLight(0xfff0d4, 1.5);
     sunLight.position.set(180, 260, 140);
     sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.mapSize.set(2048, 2048);
     sunLight.shadow.camera.near = 10;
     sunLight.shadow.camera.far = 700;
-    const d = 240;
-    sunLight.shadow.camera.left = -d;
-    sunLight.shadow.camera.right = d;
-    sunLight.shadow.camera.top = d;
-    sunLight.shadow.camera.bottom = -d;
+    const sd = 240;
+    sunLight.shadow.camera.left = -sd; sunLight.shadow.camera.right = sd;
+    sunLight.shadow.camera.top = sd; sunLight.shadow.camera.bottom = -sd;
     sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
     scene.add(sunLight.target);
 
-    // Dôme du ciel dégradé
-    const skyGeo = new THREE.SphereGeometry(750, 24, 16);
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x6ab4f5, side: THREE.BackSide, fog: false });
-    const skyDome = new THREE.Mesh(skyGeo, skyMat);
-    scene.add(skyDome);
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(780, 24, 16), skyMat));
 
-    // Système de pluie (Particules)
     const rainCount = 3000;
     const rainGeo = new THREE.BufferGeometry();
     const rainPositions = new Float32Array(rainCount * 3);
@@ -386,41 +483,180 @@
         rainPositions[i + 2] = (Math.random() - 0.5) * 160;
     }
     rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPositions, 3));
-    const rainMat = new THREE.PointsMaterial({ color: 0xaaccff, size: 0.35, transparent: true, opacity: 0.65 });
-    const rainSystem = new THREE.Points(rainGeo, rainMat);
+    const rainSystem = new THREE.Points(rainGeo, new THREE.PointsMaterial({ color: 0xaaccff, size: 0.35, transparent: true, opacity: 0.65 }));
     rainSystem.visible = false;
     scene.add(rainSystem);
 
     // =========================================================================
-    // 4. CONSTRUCTION DE LA VILLE D'AVIGNON & MONUMENTS
+    // 3. PERSONNAGES HUMANOÏDES RÉALISTES (SANS CUBES BRUTS)
     // =========================================================================
-    const colliders = []; // Boîtes englobantes { minX, maxX, minZ, maxZ, maxY }
+    function createRealisticCharacter(opts = {}) {
+        const {
+            shirtColor = 0x2563eb,
+            pantsColor = 0x1e293b,
+            skinColor = 0xe8b48a,
+            hairColor = 0x2b1d14,
+            isPolice = false,
+            isTarget = false
+        } = opts;
+
+        const root = new THREE.Group();
+
+        const skinMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.55 });
+        const shirtMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.65 });
+        const pantsMat = new THREE.MeshStandardMaterial({ color: pantsColor, roughness: 0.75 });
+        const hairMat = new THREE.MeshStandardMaterial({ color: hairColor, roughness: 0.8 });
+        const shoeMat = new THREE.MeshStandardMaterial({ color: 0x111317, roughness: 0.5 });
+
+        // Bassin / Ceinture
+        const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.25, 0.24, 14), pantsMat);
+        pelvis.position.y = 0.96;
+        pelvis.castShadow = true;
+        root.add(pelvis);
+
+        // Torse / Buste sculpté (cylindre légèrement évasé aux épaules)
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.27, 0.76, 16), shirtMat);
+        torso.position.y = 1.44;
+        torso.castShadow = true;
+        root.add(torso);
+
+        // Veste / Gilet si police ou cible
+        if (isPolice) {
+            const vest = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.3, 0.72, 16), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 }));
+            vest.position.y = 1.45;
+            root.add(vest);
+        }
+
+        // Cou
+        const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.16, 12), skinMat);
+        neck.position.y = 1.88;
+        root.add(neck);
+
+        // Tête arrondie + yeux + nez + cheveux
+        const headGroup = new THREE.Group();
+        headGroup.position.y = 2.14;
+
+        const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.23, 18, 16), skinMat);
+        headMesh.scale.set(0.92, 1.08, 0.98);
+        headMesh.castShadow = true;
+        headGroup.add(headMesh);
+
+        // Cheveux
+        const hairMesh = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.58), hairMat);
+        hairMesh.scale.set(0.95, 1.08, 1.02);
+        hairMesh.position.y = 0.02;
+        headGroup.add(hairMesh);
+
+        // Yeux
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0x111827 });
+        [-0.075, 0.075].forEach(ex => {
+            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.028, 8, 8), eyeMat);
+            eye.position.set(ex, 0.03, 0.2);
+            headGroup.add(eye);
+        });
+
+        // Casquette police
+        if (isPolice) {
+            const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0x172554 }));
+            cap.position.y = 0.18;
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.03, 0.16), new THREE.MeshStandardMaterial({ color: 0x090d16 }));
+            visor.position.set(0, 0.15, 0.22);
+            headGroup.add(cap, visor);
+        }
+
+        root.add(headGroup);
+
+        // Marqueur rouge au-dessus d'une cible de mission
+        if (isTarget) {
+            const marker = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.55, 6), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+            marker.rotation.x = Math.PI;
+            marker.position.y = 2.85;
+            root.add(marker);
+        }
+
+        // Fonction pour créer un bras articulé (épaule + avant-bras + main)
+        function createLimbArm(sideX) {
+            const pivot = new THREE.Group();
+            pivot.position.set(sideX, 1.72, 0);
+
+            const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.36, 10), shirtMat);
+            upperArm.position.y = -0.18;
+            upperArm.castShadow = true;
+            pivot.add(upperArm);
+
+            const foreArm = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.065, 0.34, 10), skinMat);
+            foreArm.position.y = -0.5;
+            foreArm.castShadow = true;
+            pivot.add(foreArm);
+
+            const hand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMat);
+            hand.position.y = -0.68;
+            pivot.add(hand);
+
+            root.add(pivot);
+            return pivot;
+        }
+
+        // Fonction pour créer une jambe articulée (cuisse + mollet + chaussure)
+        function createLimbLeg(sideX) {
+            const pivot = new THREE.Group();
+            pivot.position.set(sideX, 0.88, 0);
+
+            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.44, 12), pantsMat);
+            thigh.position.y = -0.22;
+            thigh.castShadow = true;
+            pivot.add(thigh);
+
+            const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.08, 0.42, 12), pantsMat);
+            calf.position.y = -0.62;
+            calf.castShadow = true;
+            pivot.add(calf);
+
+            const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.1, 0.28), shoeMat);
+            shoe.position.set(0, -0.84, 0.05);
+            shoe.castShadow = true;
+            pivot.add(shoe);
+
+            root.add(pivot);
+            return pivot;
+        }
+
+        const leftArm = createLimbArm(-0.42);
+        const rightArm = createLimbArm(0.42);
+        const leftLeg = createLimbLeg(-0.15);
+        const rightLeg = createLimbLeg(0.15);
+
+        root.userData = { leftArm, rightArm, leftLeg, rightLeg, headGroup };
+        return root;
+    }
+
+    // =========================================================================
+    // 4. CARTE D'AVIGNON & RÉSEAU ROUTIER AMÉLIORÉ
+    // =========================================================================
+    const colliders = [];
     const streetLights = [];
     const trafficLights = [];
     const savePoints = [];
     const npcs = [];
     const vehicles = [];
+    const weaponPickups = [];
+    const bullets = [];
+
     const districts = [
         { name: "Palais des Papes", x: 0, z: -120, r: 95 },
-        { name: "Rocher des Doms", x: -40, z: -220, r: 85 },
-        { name: "Pont Saint-Bénézet (Pont d'Avignon)", x: -240, z: -160, r: 110 },
+        { name: "Rocher des Doms", x: -45, z: -225, r: 85 },
+        { name: "Pont Saint-Bénézet", x: -230, z: -165, r: 105 },
         { name: "Place de l'Horloge", x: 0, z: -15, r: 65 },
-        { name: "Centre Historique (Intra-Muros)", x: 20, z: 40, r: 160 },
-        { name: "Remparts d'Avignon", x: 0, z: 185, r: 90 },
+        { name: "Centre Historique", x: 20, z: 40, r: 160 },
+        { name: "Remparts d'Avignon", x: 0, z: 190, r: 80 },
         { name: "Gare Avignon-Centre", x: 0, z: 245, r: 75 },
-        { name: "Quartiers Résidentiels (Montfavet / Rocade)", x: 230, z: 80, r: 140 },
-        { name: "Zone Commerciale (Mistral 7 / Cap Sud)", x: 240, z: 270, r: 130 },
-        { name: "Gare Avignon TGV (La Courtine)", x: -220, z: 330, r: 120 }
+        { name: "Quartiers Résidentiels", x: 230, z: 80, r: 140 },
+        { name: "Zone Commerciale Sud", x: 240, z: 270, r: 130 },
+        { name: "Gare Avignon TGV", x: -220, z: 330, r: 120 }
     ];
 
     function addCollider(x, z, w, d, h = 20) {
-        colliders.push({
-            minX: x - w / 2,
-            maxX: x + w / 2,
-            minZ: z - d / 2,
-            maxZ: z + d / 2,
-            maxY: h
-        });
+        colliders.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, maxY: h });
     }
 
     function createBox(w, h, d, mat, x, y, z, collide = true, castShadow = true) {
@@ -437,598 +673,590 @@
         createProceduralTextures();
 
         const matLimestone = new THREE.MeshStandardMaterial({ map: Textures.limestone, roughness: 0.8 });
-        const matFacade = new THREE.MeshStandardMaterial({ map: Textures.provenceFacade, roughness: 0.75 });
-        const matFacadeAlt = new THREE.MeshStandardMaterial({ map: Textures.provenceFacade, color: 0xf4d3a1, roughness: 0.75 });
-        const matModern = new THREE.MeshStandardMaterial({ map: Textures.modernGlass, roughness: 0.25, metalness: 0.6 });
+        const matFacade = new THREE.MeshStandardMaterial({ map: Textures.provenceFacade, roughness: 0.72 });
+        const matFacadeAlt = new THREE.MeshStandardMaterial({ map: Textures.provenceFacade, color: 0xf5d4a2, roughness: 0.72 });
+        const matModern = new THREE.MeshStandardMaterial({ map: Textures.modernGlass, roughness: 0.25, metalness: 0.65 });
         const matRoof = new THREE.MeshStandardMaterial({ color: 0xb85d3b, roughness: 0.85 });
-        const matRoad = new THREE.MeshStandardMaterial({ map: Textures.road, roughness: 0.85 });
-        const matCobble = new THREE.MeshStandardMaterial({ map: Textures.cobblestone, roughness: 0.9 });
+        const matRoad = new THREE.MeshStandardMaterial({ map: Textures.road, roughness: 0.82 });
+        const matCobble = new THREE.MeshStandardMaterial({ map: Textures.cobblestone, roughness: 0.88 });
         const matGrass = new THREE.MeshStandardMaterial({ map: Textures.grass, roughness: 0.95 });
-        const matWater = new THREE.MeshStandardMaterial({ map: Textures.water, roughness: 0.15, metalness: 0.3 });
+        const matWater = new THREE.MeshStandardMaterial({ map: Textures.water, roughness: 0.15, metalness: 0.35 });
 
-        // 1. SOL GLOBAL & LE RHÔNE
+        // Sol général
         const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), matGrass);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
+        ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
         scene.add(ground);
 
-        // Sol urbain Intra-Muros (Pavés)
+        // Sol Intra-Muros
         const intraGround = new THREE.Mesh(new THREE.PlaneGeometry(380, 380), matCobble);
-        intraGround.rotation.x = -Math.PI / 2;
-        intraGround.position.set(0, 0.03, 0);
-        intraGround.receiveShadow = true;
+        intraGround.rotation.x = -Math.PI / 2; intraGround.position.set(0, 0.03, 0); intraGround.receiveShadow = true;
         scene.add(intraGround);
 
-        // Fleuve Le Rhône (à l'Ouest : x < -195)
+        // Fleuve Le Rhône (Ouest)
         const rhone = new THREE.Mesh(new THREE.PlaneGeometry(260, 1400), matWater);
-        rhone.rotation.x = -Math.PI / 2;
-        rhone.position.set(-325, 0.05, 0);
+        rhone.rotation.x = -Math.PI / 2; rhone.position.set(-325, 0.05, 0);
         scene.add(rhone);
+        // Garde-fou / Quai au bord du Rhône, tout en laissant le Pont d'Avignon à z = -165 ouvert
+        addCollider(-196, 200, 3, 700, 30);
+        addCollider(-196, -380, 3, 420, 30);
 
-        // Quai du Rhône (Protection collision eau)
-        addCollider(-205, 0, 15, 1400, 50);
-
-        // 2. RÉSEAU ROUTIER D'AVIGNON
-        buildRoads(matRoad);
-
-        // 3. MONUMENT 1 : LE PALAIS DES PAPES (x: 0, z: -130)
-        buildPalaisDesPapes(matLimestone, matRoof);
-
-        // 4. MONUMENT 2 : ROCHER DES DOMS (x: -45, z: -225)
-        buildRocherDesDoms(matLimestone, matGrass);
-
-        // 5. MONUMENT 3 : LE PONT D'AVIGNON - SAINT-BÉNÉZET (x: -195 à -285, z: -165)
-        buildPontAvignon(matLimestone);
-
-        // 6. MONUMENT 4 : PLACE DE L'HORLOGE & OPÉRA / HÔTEL DE VILLE (x: 0, z: -15)
-        buildPlaceDeLHorloge(matLimestone, matFacade, matRoof);
-
-        // 7. MONUMENT 5 : LES REMPARTS D'AVIGNON (Ceinture de l'Intra-Muros)
-        buildRemparts(matLimestone);
-
-        // 8. MONUMENT 6 : GARE AVIGNON-CENTRE (x: 0, z: 245)
-        buildGareCentre(matLimestone, matModern);
-
-        // 9. MONUMENT 7 : GARE AVIGNON TGV (x: -220, z: 340)
-        buildGareTGV(matModern, matLimestone);
-
-        // 10. RUES DU CENTRE HISTORIQUE, QUARTIERS RÉSIDENTIELS & ZONES COMMERCIALES
-        buildCityBlocks(matFacade, matFacadeAlt, matModern, matRoof);
-
-        // 11. MOBILIER URBAIN : ARBRES (PLATANES/CYPRÈS), LAMPADAIRES, FEUX ROUGES, PARKINGS
-        buildUrbanProps(matRoad);
-
-        // 12. POINTS DE SAUVEGARDE
-        createSavePoint(18, -75, "Parvis du Palais des Papes");
-        createSavePoint(15, 225, "Parvis Gare Avignon-Centre");
-        createSavePoint(-190, 310, "Parvis Gare TGV");
-        createSavePoint(210, 240, "Zone Commerciale Sud");
-    }
-
-    function buildRoads(matRoad) {
-        // Axes principaux Nord-Sud et Est-Ouest
-        const roads = [
-            // Rue de la République (Axe central Gare Centre -> Place de l'Horloge)
-            { x: 0, z: 110, w: 18, d: 240, rot: 0 },
-            // Boulevard périphérique Sud (devant Remparts / Gare Centre)
-            { x: 20, z: 210, w: 620, d: 20, rot: 0 },
-            // Boulevard périphérique Est
-            { x: 185, z: 40, w: 20, d: 440, rot: 0 },
-            // Boulevard périphérique Nord (Quais du Rhône / Rocher)
-            { x: -10, z: -195, w: 390, d: 18, rot: 0 },
-            // Avenue vers Zone Commerciale
-            { x: 240, z: 160, w: 18, d: 340, rot: 0 },
-            // Avenue transversale Résidentielle
-            { x: 140, z: 60, w: 280, d: 16, rot: 0 },
-            // Route de la Courtine vers Gare TGV
-            { x: -110, z: 285, w: 260, d: 18, rot: 0 },
-            { x: -220, z: 295, w: 18, d: 120, rot: 0 }
+        // RÉSEAU ROUTIER COMPLET & CONNECTÉ
+        const roadSegments = [
+            // Axe central Nord-Sud (Rue de la République)
+            { x: 0, z: 105, w: 18, d: 230 },
+            // Boulevard Sud (Gare Centre / Remparts)
+            { x: 20, z: 210, w: 620, d: 20 },
+            // Boulevard Est
+            { x: 185, z: 40, w: 20, d: 440 },
+            // Boulevard Nord (Quais / Rocher)
+            { x: -10, z: -195, w: 390, d: 18 },
+            // Avenue Zone Commerciale
+            { x: 240, z: 160, w: 18, d: 340 },
+            // Avenue Résidentielle Est-Ouest
+            { x: 140, z: 60, w: 280, d: 16 },
+            // Axe transversale Centre-Est
+            { x: 92, z: 120, w: 185, d: 16 },
+            // Route Gare TGV
+            { x: -110, z: 285, w: 260, d: 18 },
+            { x: -220, z: 295, w: 18, d: 120 }
         ];
 
-        roads.forEach(r => {
+        roadSegments.forEach(r => {
             const m = new THREE.Mesh(new THREE.PlaneGeometry(r.w, r.d), matRoad);
             m.rotation.x = -Math.PI / 2;
             m.position.set(r.x, 0.06, r.z);
             m.receiveShadow = true;
             scene.add(m);
         });
-    }
 
-    function buildPalaisDesPapes(matStone, matRoof) {
-        // Corps principal monumental
-        createBox(74, 34, 52, matStone, 0, 17, -135);
-        // Aile Ouest & Cour d'Honneur
-        createBox(22, 30, 44, matStone, -32, 15, -105);
-        createBox(22, 28, 40, matStone, 32, 14, -105);
-        // Tours carrées caractéristiques avec créneaux
-        const towers = [
-            [-36, -158, 44], [36, -158, 42], [-36, -85, 38], [36, -85, 36], [0, -160, 46]
-        ];
-        towers.forEach(t => {
-            createBox(12, t[2], 12, matStone, t[0], t[2] / 2, t[1]);
+        // Passages piétons blancs aux grands carrefours
+        const zebraMat = new THREE.MeshBasicMaterial({ color: 0xf8fafc });
+        [[0, 199, 14, 1.2], [0, 221, 14, 1.2], [185, 199, 14, 1.2], [240, 199, 14, 1.2]].forEach(z => {
+            const zm = new THREE.Mesh(new THREE.PlaneGeometry(z[2], z[3]), zebraMat);
+            zm.rotation.x = -Math.PI / 2; zm.position.set(z[0], 0.08, z[1]);
+            scene.add(zm);
         });
-        // Contreforts gothiques en façade
-        for (let x = -24; x <= 24; x += 12) {
-            createBox(3, 32, 4, matStone, x, 16, -108, false);
-        }
-        // Grand Parvis dégagé
-        const parvis = new THREE.Mesh(
-            new THREE.PlaneGeometry(90, 60),
-            new THREE.MeshStandardMaterial({ color: 0xe6dcc8, roughness: 0.85 })
-        );
-        parvis.rotation.x = -Math.PI / 2;
-        parvis.position.set(0, 0.05, -75);
-        parvis.receiveShadow = true;
+
+        // PALAIS DES PAPES
+        createBox(74, 34, 52, matLimestone, 0, 17, -135);
+        createBox(22, 30, 44, matLimestone, -32, 15, -105);
+        createBox(22, 28, 40, matLimestone, 32, 14, -105);
+        [[-36, -158, 44], [36, -158, 42], [-36, -85, 38], [36, -85, 36], [0, -160, 46]].forEach(t => {
+            createBox(12, t[2], 12, matLimestone, t[0], t[2] / 2, t[1]);
+        });
+        const parvis = new THREE.Mesh(new THREE.PlaneGeometry(90, 60), new THREE.MeshStandardMaterial({ color: 0xe8dec8, roughness: 0.85 }));
+        parvis.rotation.x = -Math.PI / 2; parvis.position.set(0, 0.05, -75); parvis.receiveShadow = true;
         scene.add(parvis);
-    }
 
-    function buildRocherDesDoms(matStone, matGrass) {
-        // Colline rocheuse surplombant le Rhône et le Palais
-        createBox(85, 22, 65, matStone, -45, 11, -225);
-        createBox(70, 12, 52, matGrass, -45, 24, -225, false);
-        // Belvédère et bassin
-        createBox(30, 3, 20, matStone, -45, 30.5, -225, false);
-    }
+        // ROCHER DES DOMS (Plateau accessible à pied à y = 22)
+        createBox(85, 22, 65, matLimestone, -45, 11, -225);
+        const rocherTop = new THREE.Mesh(new THREE.PlaneGeometry(78, 58), matGrass);
+        rocherTop.rotation.x = -Math.PI / 2; rocherTop.position.set(-45, 22.05, -225); rocherTop.receiveShadow = true;
+        scene.add(rocherTop);
+        // Rampe d'accès au Rocher des Doms depuis le Sud-Est
+        const rocherRamp = new THREE.Mesh(new THREE.BoxGeometry(8, 1.5, 26), matLimestone);
+        rocherRamp.position.set(-12, 11, -205); rocherRamp.rotation.x = 0.72;
+        scene.add(rocherRamp);
 
-    function buildPontAvignon(matStone) {
-        // Pont Saint-Bénézet s'avançant sur le Rhône (4 arches + chapelle Saint-Nicolas)
-        const startX = -195;
-        const z = -165;
-        // Tablier du pont (accessible à pied !)
-        createBox(88, 1.5, 6.5, matStone, startX - 44, 6.5, z, false);
-        // Rampe d'accès depuis le quai
-        const ramp = new THREE.Mesh(new THREE.BoxGeometry(18, 1.2, 6.5), matStone);
-        ramp.position.set(startX + 6, 3.5, z);
-        ramp.rotation.z = -0.35;
+        // PONT D'AVIGNON (Pont Saint-Bénézet)
+        const startX = -195, pz = -165;
+        createBox(88, 1.5, 7, matLimestone, startX - 44, 6.5, pz, false);
+        const ramp = new THREE.Mesh(new THREE.BoxGeometry(18, 1.2, 7), matLimestone);
+        ramp.position.set(startX + 6, 3.5, pz); ramp.rotation.z = -0.35;
         scene.add(ramp);
+        for (let i = 0; i < 4; i++) createBox(5, 7, 8, matLimestone, startX - 16 - i * 20, 3.5, pz, false);
+        createBox(8, 7, 5, matLimestone, startX - 36, 10, pz, false);
 
-        // Piliers dans le Rhône
-        for (let i = 0; i < 4; i++) {
-            const px = startX - 16 - i * 20;
-            createBox(5, 7, 8, matStone, px, 3.5, z, false);
-        }
-        // Chapelle Saint-Nicolas sur le 2e pilier
-        createBox(8, 7, 5, matStone, startX - 36, 10, z, false);
-    }
-
-    function buildPlaceDeLHorloge(matStone, matFacade, matRoof) {
-        // Hôtel de Ville & Tour de l'Horloge (Beffroi)
+        // PLACE DE L'HORLOGE
         createBox(34, 16, 20, matFacade, -32, 8, -15);
-        createBox(8, 34, 8, matStone, -32, 17, -15); // Beffroi
-        // Cadran doré de l'horloge
-        const clockDial = new THREE.Mesh(
-            new THREE.CylinderGeometry(2.2, 2.2, 0.5, 20),
-            new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.7, roughness: 0.2 })
-        );
-        clockDial.rotation.z = Math.PI / 2;
-        clockDial.position.set(-27.8, 26, -15);
+        createBox(8, 34, 8, matLimestone, -32, 17, -15);
+        const clockDial = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.5, 20), new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.7, roughness: 0.2 }));
+        clockDial.rotation.z = Math.PI / 2; clockDial.position.set(-27.8, 26, -15);
         scene.add(clockDial);
+        createBox(30, 18, 22, matLimestone, 32, 9, -15);
 
-        // Opéra Grand Avignon en face
-        createBox(30, 18, 22, matStone, 32, 9, -15);
-        // Terrasses de cafés sur la place
-        for (let i = -1; i <= 1; i++) {
-            createBox(8, 0.2, 12, matRoof, -14, 0.15, -15 + i * 16, false);
-        }
-    }
-
-    function buildRemparts(matStone) {
-        // Enceinte fortifiée entourant le centre (-170 à +170 en X, -180 à +190 en Z)
-        // Avec portes ouvertes pour laisser passer les routes !
+        // REMPARTS
         const h = 11, thick = 4;
-        // Mur Sud (avec ouverture Rue de la République en x = 0)
-        createBox(152, h, thick, matStone, -94, h / 2, 190);
-        createBox(152, h, thick, matStone, 94, h / 2, 190);
-        // Tours de la Porte de la République
-        createBox(8, h + 4, 8, matStone, -15, (h + 4) / 2, 190);
-        createBox(8, h + 4, 8, matStone, 15, (h + 4) / 2, 190);
+        createBox(152, h, thick, matLimestone, -94, h / 2, 190);
+        createBox(152, h, thick, matLimestone, 94, h / 2, 190);
+        createBox(8, h + 4, 8, matLimestone, -15, (h + 4) / 2, 190);
+        createBox(8, h + 4, 8, matLimestone, 15, (h + 4) / 2, 190);
+        createBox(thick, h, 220, matLimestone, 170, h / 2, -70);
+        createBox(thick, h, 110, matLimestone, 170, h / 2, 135);
+        createBox(thick, h, 320, matLimestone, -185, h / 2, 25);
+        createBox(355, h, thick, matLimestone, -7, h / 2, -180);
 
-        // Mur Est (avec ouverture Avenue Résidentielle en z = 60)
-        createBox(thick, h, 220, matStone, 170, h / 2, -70);
-        createBox(thick, h, 110, matStone, 170, h / 2, 135);
-
-        // Mur Ouest (le long du Rhône, ouverture Pont d'Avignon en z = -165)
-        createBox(thick, h, 320, matStone, -185, h / 2, 25);
-
-        // Mur Nord
-        createBox(355, h, thick, matStone, -7, h / 2, -180);
-    }
-
-    function buildGareCentre(matStone, matModern) {
-        // Façades classiques en pierre + verrière
-        createBox(65, 16, 22, matStone, 0, 8, 255);
+        // GARES AVIGNON-CENTRE & TGV
+        createBox(65, 16, 22, matLimestone, 0, 8, 255);
         createBox(36, 12, 10, matModern, 0, 6, 242, false);
-        // Horloge de la gare
-        const clock = new THREE.Mesh(
-            new THREE.CylinderGeometry(2.5, 2.5, 0.6, 20),
-            new THREE.MeshBasicMaterial({ color: 0xffffff })
-        );
-        clock.rotation.x = Math.PI / 2;
-        clock.position.set(0, 14, 243.8);
-        scene.add(clock);
-    }
 
-    function buildGareTGV(matModern, matStone) {
-        // Architecture emblématique en coque de bateau inversée / verrière courbe
-        const archGeo = new THREE.CylinderGeometry(24, 24, 110, 20, 1, false, 0, Math.PI);
-        const arch = new THREE.Mesh(archGeo, matModern);
-        arch.rotation.z = Math.PI / 2;
-        arch.rotation.y = Math.PI / 2;
-        arch.position.set(-220, 0, 360);
-        arch.castShadow = true;
-        arch.receiveShadow = true;
+        const arch = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, 110, 20, 1, false, 0, Math.PI), matModern);
+        arch.rotation.z = Math.PI / 2; arch.rotation.y = Math.PI / 2; arch.position.set(-220, 0, 360);
+        arch.castShadow = true; arch.receiveShadow = true;
         scene.add(arch);
         addCollider(-220, 360, 48, 110, 24);
+        createBox(70, 0.4, 90, matLimestone, -155, 0.2, 340, false);
 
-        // Quais et parking TGV
-        createBox(70, 0.4, 90, matStone, -155, 0.2, 340, false);
-    }
-
-    function buildCityBlocks(matFacade, matFacadeAlt, matModern, matRoof) {
-        // 1. Immeubles du Centre Historique (Intra-Muros)
-        const intraBuildings = [
-            // Ouest de Rue de la République
-            { x: -45, z: 45, w: 32, d: 35, h: 16 },
-            { x: -45, z: 105, w: 32, d: 45, h: 18 },
-            { x: -45, z: 155, w: 32, d: 30, h: 15 },
-            { x: -105, z: -20, w: 42, d: 45, h: 17 },
-            { x: -105, z: 50, w: 42, d: 50, h: 15 },
-            { x: -105, z: 125, w: 42, d: 55, h: 16 },
-            // Est de Rue de la République
-            { x: 45, z: 45, w: 32, d: 35, h: 17 },
-            { x: 45, z: 105, w: 32, d: 45, h: 16 },
-            { x: 45, z: 155, w: 32, d: 30, h: 18 },
-            { x: 105, z: -35, w: 45, d: 50, h: 16 },
-            { x: 105, z: 25, w: 45, d: 35, h: 15 },
-            { x: 105, z: 115, w: 45, d: 65, h: 17 }
-        ];
-
-        intraBuildings.forEach((b, idx) => {
-            const mat = idx % 2 === 0 ? matFacade : matFacadeAlt;
-            createBox(b.w, b.h, b.d, mat, b.x, b.h / 2, b.z);
-            // Toit en tuiles provençales
+        // IMMEUBLES, QUARTIERS RÉSIDENTIELS & COMMERCES
+        [
+            { x: -45, z: 45, w: 32, d: 35, h: 16 }, { x: -45, z: 105, w: 32, d: 45, h: 18 },
+            { x: -45, z: 155, w: 32, d: 30, h: 15 }, { x: -105, z: -20, w: 42, d: 45, h: 17 },
+            { x: -105, z: 50, w: 42, d: 50, h: 15 }, { x: -105, z: 125, w: 42, d: 55, h: 16 },
+            { x: 45, z: 45, w: 32, d: 35, h: 17 }, { x: 45, z: 105, w: 32, d: 45, h: 16 },
+            { x: 45, z: 155, w: 32, d: 30, h: 18 }, { x: 105, z: -35, w: 45, d: 50, h: 16 },
+            { x: 105, z: 25, w: 45, d: 35, h: 15 }, { x: 105, z: 115, w: 45, d: 65, h: 17 }
+        ].forEach((b, idx) => {
+            createBox(b.w, b.h, b.d, idx % 2 === 0 ? matFacade : matFacadeAlt, b.x, b.h / 2, b.z);
             createBox(b.w + 1, 1.5, b.d + 1, matRoof, b.x, b.h + 0.75, b.z, false);
         });
 
-        // 2. Quartiers Résidentiels (Est : Villas & Résidences provençales)
         for (let row = 0; row < 4; row++) {
             for (let col = 0; col < 3; col++) {
-                const vx = 215 + col * 42;
-                const vz = -40 + row * 40;
-                if (Math.abs(vz - 60) < 18) continue; // Laisser passer la route
+                const vx = 215 + col * 42, vz = -40 + row * 40;
+                if (Math.abs(vz - 60) < 18) continue;
                 createBox(18, 9, 16, matFacadeAlt, vx, 4.5, vz);
                 createBox(19.5, 1.8, 17.5, matRoof, vx, 9.8, vz, false);
             }
         }
 
-        // 3. Zones Commerciales (Sud-Est : Grandes enseignes & galeries)
-        const shops = [
-            { x: 285, z: 220, w: 45, d: 60, h: 12, label: "CENTRE COMMERCIAL AVIGNON SUD" },
-            { x: 285, z: 300, w: 45, d: 65, h: 13, label: "GALERIE MISTRAL" },
-            { x: 195, z: 290, w: 38, d: 50, h: 11, label: "SUPERMARCHÉ PROVENÇAL" }
-        ];
-        shops.forEach(s => {
+        [
+            { x: 290, z: 220, w: 45, d: 60, h: 12 },
+            { x: 290, z: 300, w: 45, d: 65, h: 13 },
+            { x: 195, z: 290, w: 38, d: 50, h: 11 }
+        ].forEach(s => {
             createBox(s.w, s.h, s.d, matModern, s.x, s.h / 2, s.z);
-            // Enseigne lumineuse colorée
-            const signMat = new THREE.MeshBasicMaterial({ color: 0xff6b35 });
-            createBox(2, 3, s.d * 0.6, signMat, s.x - s.w / 2 - 0.5, s.h - 2, s.z, false);
+            createBox(2, 3, s.d * 0.6, new THREE.MeshBasicMaterial({ color: 0xff6b35 }), s.x - s.w / 2 - 0.5, s.h - 2, s.z, false);
         });
-    }
 
-    function buildUrbanProps(matRoad) {
+        // ARBRES, LAMPADAIRES & FEUX ROUGES
         const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5c4033, roughness: 0.9 });
         const foliageMat = new THREE.MeshStandardMaterial({ color: 0x4b7734, roughness: 0.8 });
         const cypressMat = new THREE.MeshStandardMaterial({ color: 0x2d4c22, roughness: 0.85 });
 
-        // Platanes le long de la Rue de la République et des boulevards
-        const treeCoords = [];
-        for (let z = 10; z <= 180; z += 24) {
-            treeCoords.push({ x: -12, z, type: 'plane' });
-            treeCoords.push({ x: 12, z, type: 'plane' });
-        }
-        // Cyprès de Provence au Rocher des Doms et quartiers résidentiels
-        for (let i = 0; i < 28; i++) {
-            treeCoords.push({
-                x: -75 + (i % 7) * 10,
-                z: -245 + Math.floor(i / 7) * 12,
-                type: 'cypress'
+        for (let z = 15; z <= 175; z += 26) {
+            [-12, 12].forEach(x => {
+                const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.58, 4.5, 8), trunkMat);
+                tr.position.set(x, 2.25, z); tr.castShadow = true; scene.add(tr);
+                const cr = new THREE.Mesh(new THREE.DodecahedronGeometry(3.2, 1), foliageMat);
+                cr.position.set(x, 6.2, z); cr.castShadow = true; scene.add(cr);
+                addCollider(x, z, 1.2, 1.2, 8);
             });
         }
-        for (let x = 200; x <= 320; x += 35) {
-            treeCoords.push({ x, z: 140, type: 'cypress' });
-            treeCoords.push({ x, z: 180, type: 'plane' });
+        for (let i = 0; i < 20; i++) {
+            const cx = -75 + (i % 5) * 12, cz = -245 + Math.floor(i / 5) * 12;
+            const cy = new THREE.Mesh(new THREE.ConeGeometry(1.4, 9.5, 8), cypressMat);
+            cy.position.set(cx, 4.75, cz); cy.castShadow = true; scene.add(cy);
         }
 
-        treeCoords.forEach(t => {
-            if (t.type === 'plane') {
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 4.5, 8), trunkMat);
-                trunk.position.set(t.x, 2.25, t.z);
-                trunk.castShadow = true;
-                scene.add(trunk);
-
-                const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(3.2, 1), foliageMat);
-                crown.position.set(t.x, 6.2, t.z);
-                crown.castShadow = true;
-                scene.add(crown);
-            } else {
-                const cypress = new THREE.Mesh(new THREE.ConeGeometry(1.4, 9.5, 8), cypressMat);
-                cypress.position.set(t.x, 4.75, t.z);
-                cypress.castShadow = true;
-                scene.add(cypress);
-            }
-            addCollider(t.x, t.z, 1.2, 1.2, 8);
-        });
-
-        // Lampadaires urbains
         const poleMat = new THREE.MeshStandardMaterial({ color: 0x1e242b, metalness: 0.7 });
         const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffdf9e });
-        const lampLocations = [
-            [-10, 30], [10, 30], [-10, 90], [10, 90], [-10, 150], [10, 150],
-            [-30, -80], [30, -80], [-80, 200], [80, 200], [180, 200], [230, 120],
-            [230, 240], [-140, 275], [-210, 275]
-        ];
-        lampLocations.forEach(loc => {
+        [[-10, 30], [10, 30], [-10, 90], [10, 90], [-30, -80], [30, -80], [-80, 200], [80, 200], [230, 240]].forEach(loc => {
             const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.25, 7, 6), poleMat);
-            pole.position.set(loc[0], 3.5, loc[1]);
-            scene.add(pole);
-
+            pole.position.set(loc[0], 3.5, loc[1]); scene.add(pole);
             const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 8), bulbMat);
-            bulb.position.set(loc[0], 7.1, loc[1]);
-            scene.add(bulb);
+            bulb.position.set(loc[0], 7.1, loc[1]); scene.add(bulb);
             streetLights.push(bulb);
         });
 
-        // Feux tricolores aux grands carrefours
-        const intersections = [
-            { x: 11, z: 199 }, { x: -11, z: 221 },
-            { x: 174, z: 199 }, { x: 229, z: 199 }
-        ];
-        intersections.forEach((pos, idx) => {
+        [{ x: 11, z: 199 }, { x: -11, z: 221 }, { x: 174, z: 199 }, { x: 229, z: 199 }].forEach((pos, idx) => {
             const post = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 5.5, 6), poleMat);
-            post.position.set(pos.x, 2.75, pos.z);
-            scene.add(post);
-
-            const box = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.6, 0.6), poleMat);
-            box.position.set(pos.x, 4.8, pos.z);
-            scene.add(box);
-
-            const lightMesh = new THREE.Mesh(
-                new THREE.SphereGeometry(0.28, 8, 8),
-                new THREE.MeshBasicMaterial({ color: 0x00ff44 })
-            );
-            lightMesh.position.set(pos.x, 4.8, pos.z + 0.32);
-            scene.add(lightMesh);
-
-            trafficLights.push({
-                x: pos.x, z: pos.z, mesh: lightMesh,
-                phase: idx % 2 === 0 ? 'GREEN' : 'RED',
-                timer: 0
-            });
+            post.position.set(pos.x, 2.75, pos.z); scene.add(post);
+            const lm = new THREE.Mesh(new THREE.SphereGeometry(0.32, 8, 8), new THREE.MeshBasicMaterial({ color: 0x00ff44 }));
+            lm.position.set(pos.x, 4.8, pos.z + 0.32); scene.add(lm);
+            trafficLights.push({ x: pos.x, z: pos.z, mesh: lm, phase: idx % 2 === 0 ? 'GREEN' : 'RED', timer: 0 });
         });
 
-        // Parkings (Gare Centre & Zone Commerciale)
-        const parking1 = new THREE.Mesh(new THREE.PlaneGeometry(45, 35), matRoad);
-        parking1.rotation.x = -Math.PI / 2;
-        parking1.position.set(55, 0.07, 245);
-        scene.add(parking1);
-
-        const parking2 = new THREE.Mesh(new THREE.PlaneGeometry(40, 70), matRoad);
-        parking2.rotation.x = -Math.PI / 2;
-        parking2.position.set(240, 0.07, 260);
-        scene.add(parking2);
+        createSavePoint(18, -75, "Parvis du Palais des Papes");
+        createSavePoint(15, 226, "Gare Avignon-Centre");
+        createSavePoint(-205, 290, "Gare TGV");
+        createSavePoint(225, 235, "Zone Commerciale Sud");
     }
 
     function createSavePoint(x, z, label) {
-        const ring = new THREE.Mesh(
-            new THREE.TorusGeometry(1.5, 0.15, 12, 24),
-            new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-        );
-        ring.rotation.x = Math.PI / 2;
-        ring.position.set(x, 0.25, z);
-        scene.add(ring);
-
-        const crystal = new THREE.Mesh(
-            new THREE.OctahedronGeometry(0.7, 0),
-            new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true })
-        );
-        crystal.position.set(x, 1.8, z);
-        scene.add(crystal);
-
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.15, 12, 24), new THREE.MeshBasicMaterial({ color: 0x00e5ff }));
+        ring.rotation.x = Math.PI / 2; ring.position.set(x, 0.25, z); scene.add(ring);
+        const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(0.7, 0), new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true }));
+        crystal.position.set(x, 1.8, z); scene.add(crystal);
         savePoints.push({ x, z, label, mesh: crystal });
     }
 
     // =========================================================================
-    // 5. PERSONNAGE 3D ARTICULÉ & CONTRÔLES
+    // 5. ARMES AU SOL & BALISTIQUE
     // =========================================================================
-    function createHumanoidMesh(shirtColor, pantsColor, skinColor = 0xe8b48a, isPolice = false) {
+    function createWeaponModel(slot) {
         const group = new THREE.Group();
+        const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 });
+        const gripMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.8 });
 
-        const skinMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.6 });
-        const shirtMat = new THREE.MeshStandardMaterial({ color: shirtColor, roughness: 0.7 });
-        const pantsMat = new THREE.MeshStandardMaterial({ color: pantsColor, roughness: 0.8 });
-
-        // Torse
-        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.0, 0.4), shirtMat);
-        torso.position.y = 1.35;
-        torso.castShadow = true;
-        group.add(torso);
-
-        // Tête
-        const head = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.48, 0.46), skinMat);
-        head.position.y = 2.15;
-        head.castShadow = true;
-        group.add(head);
-
-        if (isPolice) {
-            const cap = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12),
-                new THREE.MeshStandardMaterial({ color: 0x102a43 })
-            );
-            cap.position.y = 2.45;
-            group.add(cap);
+        if (slot === 1) {
+            const barrel = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.55), metalMat);
+            barrel.position.set(0, 0.15, 0.1);
+            const grip = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.32, 0.16), gripMat);
+            grip.position.set(0, 0, -0.1); grip.rotation.x = 0.25;
+            group.add(barrel, grip);
+        } else if (slot === 2) {
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 0.85), metalMat);
+            body.position.set(0, 0.15, 0);
+            const mag = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.45, 0.14), metalMat);
+            mag.position.set(0, -0.12, 0.12);
+            group.add(body, mag);
+        } else if (slot === 3) {
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.24, 1.25), metalMat);
+            body.position.set(0, 0.15, 0);
+            const stock = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.22, 0.38), gripMat);
+            stock.position.set(0, 0.12, -0.65);
+            const mag = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.42, 0.18), metalMat);
+            mag.position.set(0, -0.1, 0.18); mag.rotation.x = 0.2;
+            group.add(body, stock, mag);
         }
-
-        // Bras gauche & droit
-        const armGeo = new THREE.BoxGeometry(0.24, 0.88, 0.24);
-        const leftArm = new THREE.Mesh(armGeo, skinMat);
-        leftArm.position.set(-0.54, 1.35, 0);
-        leftArm.castShadow = true;
-        group.add(leftArm);
-
-        const rightArm = new THREE.Mesh(armGeo, skinMat);
-        rightArm.position.set(0.54, 1.35, 0);
-        rightArm.castShadow = true;
-        group.add(rightArm);
-
-        // Jambes gauche & droite
-        const legGeo = new THREE.BoxGeometry(0.28, 0.9, 0.28);
-        const leftLeg = new THREE.Mesh(legGeo, pantsMat);
-        leftLeg.position.set(-0.2, 0.45, 0);
-        leftLeg.castShadow = true;
-        group.add(leftLeg);
-
-        const rightLeg = new THREE.Mesh(legGeo, pantsMat);
-        rightLeg.position.set(0.2, 0.45, 0);
-        rightLeg.castShadow = true;
-        group.add(rightLeg);
-
-        group.userData = { leftArm, rightArm, leftLeg, rightLeg };
         return group;
     }
 
+    function spawnGroundWeapons() {
+        const placements = [
+            { slot: 1, x: 14, y: 0, z: -15 },
+            { slot: 1, x: 12, y: 0, z: -80 },
+            { slot: 1, x: 12, y: 0, z: 224 },
+            { slot: 2, x: -190, y: 0, z: -165 },
+            { slot: 2, x: -215, y: 0, z: 290 },
+            { slot: 2, x: 235, y: 0, z: 220 },
+            { slot: 3, x: -45, y: 22, z: -215 },
+            { slot: 3, x: 185, y: 0, z: 60 },
+            { slot: 3, x: 245, y: 0, z: 285 }
+        ];
+
+        placements.forEach(p => {
+            const def = WEAPON_DEFS[p.slot];
+            const container = new THREE.Group();
+            container.position.set(p.x, p.y + 0.9, p.z);
+
+            const glowRing = new THREE.Mesh(
+                new THREE.RingGeometry(0.8, 1.15, 24),
+                new THREE.MeshBasicMaterial({ color: def.color, side: THREE.DoubleSide })
+            );
+            glowRing.rotation.x = Math.PI / 2;
+            glowRing.position.y = -0.82;
+            container.add(glowRing);
+
+            const model = createWeaponModel(p.slot);
+            model.scale.set(1.6, 1.6, 1.6);
+            container.add(model);
+
+            scene.add(container);
+            weaponPickups.push({ container, model, slot: p.slot, x: p.x, y: p.y, z: p.z, active: true, respawnTimer: 0 });
+        });
+    }
+
+    function equipWeapon(slot) {
+        if (!GameState.unlockedWeapons[slot]) return;
+        GameState.currentWeaponSlot = slot;
+        const def = WEAPON_DEFS[slot];
+
+        if (player.heldWeaponMesh) {
+            player.mesh.userData.rightArm.remove(player.heldWeaponMesh);
+            player.heldWeaponMesh = null;
+        }
+        if (slot > 0) {
+            const wm = createWeaponModel(slot);
+            wm.position.set(0, -0.55, 0.22);
+            player.mesh.userData.rightArm.add(wm);
+            player.mesh.userData.rightArm.rotation.x = -Math.PI / 2.3;
+            player.heldWeaponMesh = wm;
+        } else {
+            player.mesh.userData.rightArm.rotation.x = 0;
+        }
+
+        document.getElementById('weapon-name').textContent = def.name;
+        updateWeaponHUD();
+    }
+
+    function updateWeaponHUD() {
+        const slot = GameState.currentWeaponSlot;
+        const def = WEAPON_DEFS[slot];
+        const ammoEl = document.getElementById('weapon-ammo');
+        ammoEl.textContent = slot === 0 ? "∞" : `${GameState.ammoClip[slot]} / ${GameState.ammoReserve[slot]}`;
+
+        document.querySelectorAll('.w-slot').forEach(el => {
+            const s = parseInt(el.dataset.slot);
+            el.classList.toggle('active', s === slot);
+            el.classList.toggle('locked', !GameState.unlockedWeapons[s]);
+            if (GameState.unlockedWeapons[s]) {
+                el.textContent = `${s + 1}: ${WEAPON_DEFS[s].name.split(' ')[0]}`;
+            }
+        });
+    }
+
+    function fireWeapon() {
+        if (GameState.inVehicle || GameState.paused || GameState.inMenu) return;
+        if (GameState.fireCooldown > 0) return;
+
+        const slot = GameState.currentWeaponSlot;
+        const def = WEAPON_DEFS[slot];
+        GameState.fireCooldown = def.fireRate;
+
+        player.mesh.userData.rightArm.rotation.x = -Math.PI / 1.8;
+        setTimeout(() => {
+            if (player.mesh) player.mesh.userData.rightArm.rotation.x = slot > 0 ? -Math.PI / 2.3 : 0;
+        }, 140);
+
+        if (slot === 0) {
+            for (const npc of npcs) {
+                if (!npc.dead && player.pos.distanceTo(npc.mesh.position) < 2.9) {
+                    damageNPC(npc, def.damage, new THREE.Vector3(Math.sin(player.mesh.rotation.y), 0.2, Math.cos(player.mesh.rotation.y)).multiplyScalar(6));
+                    increaseWanted(npc.isPolice ? 2 : 1);
+                    break;
+                }
+            }
+            return;
+        }
+
+        if (GameState.ammoClip[slot] <= 0) { reloadWeapon(); return; }
+        GameState.ammoClip[slot]--;
+        updateWeaponHUD();
+
+        const shootDir = new THREE.Vector3(-Math.sin(cameraYaw), -Math.sin(cameraPitch) * 0.45, -Math.cos(cameraYaw)).normalize();
+        player.mesh.rotation.y = Math.atan2(shootDir.x, shootDir.z);
+
+        const bulletMesh = new THREE.Mesh(new THREE.SphereGeometry(0.14, 6, 6), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+        bulletMesh.position.copy(player.pos).add(new THREE.Vector3(0, 1.55, 0)).addScaledVector(shootDir, 0.9);
+        scene.add(bulletMesh);
+
+        bullets.push({ mesh: bulletMesh, vel: shootDir.multiplyScalar(120), damage: def.damage, life: 0.9 });
+        increaseWanted(1);
+    }
+
+    function reloadWeapon() {
+        const slot = GameState.currentWeaponSlot;
+        if (slot === 0) return;
+        const def = WEAPON_DEFS[slot];
+        const needed = def.maxClip - GameState.ammoClip[slot];
+        if (needed <= 0 || GameState.ammoReserve[slot] <= 0) return;
+        const taken = Math.min(needed, GameState.ammoReserve[slot]);
+        GameState.ammoClip[slot] += taken;
+        GameState.ammoReserve[slot] -= taken;
+        updateWeaponHUD();
+        showNotification(`Chargeur rechargé (${def.name})`);
+    }
+
+    function damageNPC(npc, amount, knockback = null, byVehicle = false) {
+        if (npc.dead) return;
+        npc.hp -= amount;
+        if (knockback) {
+            npc.mesh.position.x += knockback.x * 0.15;
+            npc.mesh.position.z += knockback.z * 0.15;
+        }
+        if (npc.hp <= 0) {
+            npc.dead = true;
+            npc.mesh.rotation.x = Math.PI / 2;
+            npc.mesh.position.y = (npc.baseY || 0) + 0.25;
+            const reward = npc.rewardMoney || 150;
+            GameState.money += reward;
+            if (byVehicle) {
+                showNotification(`ÉCRASÉ ! (+${reward} €)`);
+            } else {
+                showNotification(npc.isTarget ? `CIBLE ÉLIMINÉE ! (+${reward} €)` : `Neutralisé (+${reward} €)`);
+            }
+            checkMissionCompletion();
+        }
+    }
+
+    // =========================================================================
+    // 6. JOUEUR, VÉHICULES (ÉCRASEMENT INCLUS) & MISSIONS VÉRIFIÉES
+    // =========================================================================
     const player = {
         mesh: null,
+        heldWeaponMesh: null,
         pos: new THREE.Vector3(0, 0, -45),
         vel: new THREE.Vector3(0, 0, 0),
-        yaw: Math.PI,
         onGround: true,
         walkCycle: 0
     };
 
     function initPlayer() {
-        player.mesh = createHumanoidMesh(0x1f2937, 0x2b4c7e);
+        player.mesh = createRealisticCharacter({ shirtColor: 0x1e293b, pantsColor: 0x2563eb, hairColor: 0x1c1917 });
         player.mesh.position.copy(player.pos);
         scene.add(player.mesh);
     }
 
-    // =========================================================================
-    // 6. VÉHICULES 3D, PHYSIQUE DE CONDUITE, CIRCULATION & POLICE
-    // =========================================================================
-    const VEHICLE_TYPES = [
-        { name: "CITADINE PROVENÇALE", color: 0xf4f4f6, maxSpeed: 34, accel: 22, turn: 2.3, w: 2.1, d: 4.3, h: 1.45 },
-        { name: "COUPÉ SPORT SOLEIL", color: 0xe63946, maxSpeed: 48, accel: 32, turn: 2.6, w: 2.2, d: 4.5, h: 1.25 },
-        { name: "BERLINE EXÉCUTIVE", color: 0x1d3557, maxSpeed: 40, accel: 25, turn: 2.1, w: 2.2, d: 4.8, h: 1.45 },
-        { name: "SUV GARRIGUE 4X4", color: 0x4a5d23, maxSpeed: 36, accel: 24, turn: 2.0, w: 2.35, d: 4.7, h: 1.75 },
-        { name: "POLICE NATIONALE", color: 0xffffff, maxSpeed: 45, accel: 30, turn: 2.5, w: 2.2, d: 4.6, h: 1.45, isPolice: true }
+    // MISSIONS 100% ACCESSIBLES SUR LA CARTE
+    const MISSIONS = [
+        {
+            id: 0,
+            title: "1. Parvis & Premier Pistolet",
+            summary: "Rejoignez le Parvis du Palais des Papes puis récupérez le Pistolet 9mm sur la Place de l'Horloge.",
+            reward: 800,
+            steps: [
+                {
+                    type: "GOTO",
+                    desc: "Rendez-vous sur le Parvis du Palais des Papes.",
+                    pos: new THREE.Vector3(0, 0, -82),
+                    dialogue: { speaker: "INFORMATEUR", text: "Un Pistolet 9mm vous attend sur la Place de l'Horloge (à 14, -15) !" }
+                },
+                {
+                    type: "GOTO",
+                    desc: "Allez récupérer le Pistolet 9mm sur la Place de l'Horloge.",
+                    pos: new THREE.Vector3(14, 0, -15),
+                    dialogue: { speaker: "SYSTÈME", text: "Arme récupérée ! Appuyez sur [2] pour l'équiper et [Clic Gauche] pour tirer." }
+                }
+            ]
+        },
+        {
+            id: 1,
+            title: "2. Escarmouche sur le Pont d'Avignon",
+            summary: "Rejoignez l'entrée du Pont Saint-Bénézet et neutralisez les 2 cibles sur le pont.",
+            reward: 1500,
+            steps: [
+                {
+                    type: "GOTO",
+                    desc: "Allez à l'entrée du Pont d'Avignon (Ouest).",
+                    pos: new THREE.Vector3(-188, 0, -165),
+                    dialogue: { speaker: "CONTACT", text: "Deux cibles se trouvent sur le Pont Saint-Bénézet. Éliminez-les !" }
+                },
+                {
+                    type: "ELIMINATE",
+                    desc: "Éliminez les 2 cibles sur le Pont d'Avignon.",
+                    pos: new THREE.Vector3(-220, 6.5, -165),
+                    spawnTargets: [
+                        { x: -215, y: 6.5, z: -165 },
+                        { x: -232, y: 6.5, z: -165 }
+                    ],
+                    dialogue: { speaker: "CONTACT", text: "Zone sécurisée ! Une SMG Vaucluse est posée à l'entrée du pont." }
+                }
+            ]
+        },
+        {
+            id: 2,
+            title: "3. Course TGV vers Gare Centre",
+            summary: "Rejoignez la route de la Gare TGV puis foncez jusqu'à la Gare Avignon-Centre en moins de 55s.",
+            reward: 2200,
+            steps: [
+                {
+                    type: "GOTO",
+                    desc: "Rendez-vous sur la route de la Gare TGV.",
+                    pos: new THREE.Vector3(-215, 0, 290),
+                    dialogue: { speaker: "MESSAGER", text: "Prenez un véhicule et foncez vers la Gare Avignon-Centre avant la fin du chrono !" }
+                },
+                {
+                    type: "TIMED_GOTO",
+                    timeLimit: 55,
+                    desc: "Rejoignez le parvis de la Gare Avignon-Centre.",
+                    pos: new THREE.Vector3(0, 0, 226),
+                    dialogue: { speaker: "AGENT", text: "Arrivée réussie ! Prime versée." }
+                }
+            ]
+        },
+        {
+            id: 3,
+            title: "4. Sommet du Rocher des Doms",
+            summary: "Montez sur le Rocher des Doms et éliminez les 2 gardes en haut.",
+            reward: 3000,
+            steps: [
+                {
+                    type: "ELIMINATE",
+                    desc: "Éliminez les 2 cibles au sommet du Rocher des Doms.",
+                    pos: new THREE.Vector3(-45, 22, -220),
+                    spawnTargets: [
+                        { x: -45, y: 22, z: -222 },
+                        { x: -35, y: 22, z: -218 }
+                    ],
+                    dialogue: { speaker: "VICTOIRE", text: "Rocher des Doms sécurisé ! Vous maîtrisez tout Avignon." }
+                }
+            ]
+        }
     ];
 
-    function createVehicle(typeIndex, x, z, rotationY = 0, isTraffic = false) {
-        const spec = VEHICLE_TYPES[typeIndex];
-        const group = new THREE.Group();
+    let activeMissionTargets = [];
+    const beaconCyl = new THREE.Mesh(
+        new THREE.CylinderGeometry(2.2, 2.2, 50, 16, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+    );
+    scene.add(beaconCyl);
 
-        const bodyMat = new THREE.MeshStandardMaterial({
-            color: spec.color,
-            roughness: 0.25,
-            metalness: 0.65
-        });
-        const glassMat = new THREE.MeshStandardMaterial({
-            color: 0x111827,
-            roughness: 0.1,
-            metalness: 0.9
-        });
-        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.85 });
+    function startMissionStep() {
+        activeMissionTargets.forEach(t => { if (t.mesh) scene.remove(t.mesh); });
+        activeMissionTargets = [];
 
-        // Châssis
-        const chassis = new THREE.Mesh(new THREE.BoxGeometry(spec.w, spec.h * 0.55, spec.d), bodyMat);
-        chassis.position.y = 0.65;
-        chassis.castShadow = true;
-        chassis.receiveShadow = true;
-        group.add(chassis);
+        const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+        const step = m.steps[GameState.currentStepIdx];
+        beaconCyl.position.set(step.pos.x, step.pos.y + 25, step.pos.z);
 
-        // Habitacle
-        const cabin = new THREE.Mesh(new THREE.BoxGeometry(spec.w * 0.84, spec.h * 0.48, spec.d * 0.54), glassMat);
-        cabin.position.set(0, 0.65 + spec.h * 0.45, -0.15);
-        cabin.castShadow = true;
-        group.add(cabin);
+        GameState.missionTimer = step.type === "TIMED_GOTO" ? step.timeLimit : 0;
 
-        // Phares avant & feux arrière
-        const headLightMat = new THREE.MeshBasicMaterial({ color: 0xfff8dc });
-        const tailLightMat = new THREE.MeshBasicMaterial({ color: 0xff2a2a });
-        [-spec.w * 0.35, spec.w * 0.35].forEach(wx => {
-            const hl = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.2, 0.1), headLightMat);
-            hl.position.set(wx, 0.68, spec.d / 2 + 0.02);
-            group.add(hl);
-
-            const tl = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.1), tailLightMat);
-            tl.position.set(wx, 0.68, -spec.d / 2 - 0.02);
-            group.add(tl);
-        });
-
-        // Gyrophare si Police
-        let sirenBlue = null, sirenRed = null;
-        if (spec.isPolice) {
-            const stripe = new THREE.Mesh(
-                new THREE.BoxGeometry(spec.w + 0.04, 0.25, spec.d * 0.95),
-                new THREE.MeshBasicMaterial({ color: 0x1d4ed8 })
-            );
-            stripe.position.y = 0.68;
-            group.add(stripe);
-
-            sirenBlue = new THREE.Mesh(
-                new THREE.BoxGeometry(0.45, 0.18, 0.25),
-                new THREE.MeshBasicMaterial({ color: 0x0088ff })
-            );
-            sirenBlue.position.set(-0.35, 0.65 + spec.h * 0.72, -0.15);
-            group.add(sirenBlue);
-
-            sirenRed = new THREE.Mesh(
-                new THREE.BoxGeometry(0.45, 0.18, 0.25),
-                new THREE.MeshBasicMaterial({ color: 0xff1111 })
-            );
-            sirenRed.position.set(0.35, 0.65 + spec.h * 0.72, -0.15);
-            group.add(sirenRed);
+        if (step.type === "ELIMINATE" && step.spawnTargets) {
+            step.spawnTargets.forEach(pt => {
+                const mesh = createRealisticCharacter({ shirtColor: 0xb91c1c, pantsColor: 0x111827, isTarget: true });
+                mesh.position.set(pt.x, pt.y, pt.z);
+                scene.add(mesh);
+                const enemy = {
+                    mesh, homeX: pt.x, homeZ: pt.z, baseY: pt.y, radius: 10,
+                    angle: 0, speed: 2.0, hp: 100, dead: false, isTarget: true, rewardMoney: 400, walkCycle: 0
+                };
+                npcs.push(enemy);
+                activeMissionTargets.push(enemy);
+            });
         }
-
-        // 4 Roues
-        const wheels = [];
-        const wheelGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.32, 14);
-        wheelGeo.rotateZ(Math.PI / 2);
-        const wOffsets = [
-            [-spec.w / 2 - 0.05, 0.42, spec.d * 0.32],
-            [spec.w / 2 + 0.05, 0.42, spec.d * 0.32],
-            [-spec.w / 2 - 0.05, 0.42, -spec.d * 0.32],
-            [spec.w / 2 + 0.05, 0.42, -spec.d * 0.32]
-        ];
-        wOffsets.forEach(o => {
-            const wMesh = new THREE.Mesh(wheelGeo, wheelMat);
-            wMesh.position.set(o[0], o[1], o[2]);
-            wMesh.castShadow = true;
-            group.add(wMesh);
-            wheels.push(wMesh);
-        });
-
-        group.position.set(x, 0, z);
-        group.rotation.y = rotationY;
-        scene.add(group);
-
-        const carObj = {
-            mesh: group,
-            spec,
-            speed: 0,
-            steerAngle: 0,
-            wheels,
-            isTraffic,
-            isPolice: !!spec.isPolice,
-            sirenBlue,
-            sirenRed,
-            aiDir: new THREE.Vector3(Math.sin(rotationY), 0, Math.cos(rotationY)),
-            waypointIndex: Math.floor(Math.random() * TRAFFIC_LOOP.length)
-        };
-        vehicles.push(carObj);
-        return carObj;
+        updateMissionHUD();
     }
 
-    // Boucle de circulation autour de la ville
+    function checkMissionCompletion() {
+        const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+        const step = m.steps[GameState.currentStepIdx];
+        let done = false;
+
+        if (step.type === "GOTO" || step.type === "TIMED_GOTO") {
+            if (Math.hypot(player.pos.x - step.pos.x, player.pos.z - step.pos.z) < 6.5 && Math.abs(player.pos.y - step.pos.y) < 4) {
+                done = true;
+            }
+        } else if (step.type === "ELIMINATE") {
+            if (activeMissionTargets.filter(t => !t.dead).length === 0) done = true;
+        }
+
+        if (done) {
+            if (step.dialogue) showDialogue(step.dialogue.speaker, step.dialogue.text);
+            GameState.currentStepIdx++;
+            if (GameState.currentStepIdx >= m.steps.length) {
+                GameState.money += m.reward;
+                if (!GameState.completedMissions.includes(m.id)) GameState.completedMissions.push(m.id);
+                showNotification(`MISSION ACCOMPLIE : ${m.title} (+${m.reward} €)`);
+                GameState.currentMissionIdx++;
+                GameState.currentStepIdx = 0;
+            }
+            startMissionStep();
+        }
+    }
+
+    function updateMissionHUD() {
+        const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+        const step = m.steps[GameState.currentStepIdx];
+        document.getElementById('mission-step-tag').textContent = `ÉTAPE ${GameState.currentStepIdx + 1}/${m.steps.length}`;
+        document.getElementById('mission-reward').textContent = `+${m.reward} €`;
+        document.getElementById('mission-title').textContent = m.title;
+
+        let desc = step.desc;
+        if (step.type === "TIMED_GOTO") desc += ` (${Math.ceil(GameState.missionTimer)}s)`;
+        else if (step.type === "ELIMINATE") desc += ` (Restants : ${activeMissionTargets.filter(t => !t.dead).length})`;
+        document.getElementById('mission-desc').textContent = desc;
+        document.getElementById('mission-progress-fill').style.width = `${Math.max(18, (GameState.currentStepIdx / m.steps.length) * 100)}%`;
+    }
+
+    function showDialogue(speaker, text) {
+        const box = document.getElementById('dialogue-box');
+        document.getElementById('dialogue-speaker').textContent = speaker;
+        document.getElementById('dialogue-text').textContent = text;
+        box.classList.remove('hidden');
+        clearTimeout(box._t);
+        box._t = setTimeout(() => box.classList.add('hidden'), 5500);
+    }
+
+    // VÉHICULES
+    const VEHICLE_TYPES = [
+        { name: "CITADINE PROVENÇALE", color: 0xf4f4f6, maxSpeed: 35, accel: 23, turn: 2.3, w: 2.1, d: 4.3, h: 1.45 },
+        { name: "COUPÉ SPORT SOLEIL", color: 0xe63946, maxSpeed: 49, accel: 33, turn: 2.6, w: 2.2, d: 4.5, h: 1.25 },
+        { name: "BERLINE EXÉCUTIVE", color: 0x1d3557, maxSpeed: 41, accel: 26, turn: 2.1, w: 2.2, d: 4.8, h: 1.45 },
+        { name: "SUV GARRIGUE 4X4", color: 0x4a5d23, maxSpeed: 37, accel: 25, turn: 2.0, w: 2.35, d: 4.7, h: 1.75 },
+        { name: "POLICE NATIONALE", color: 0xffffff, maxSpeed: 46, accel: 31, turn: 2.5, w: 2.2, d: 4.6, h: 1.45, isPolice: true }
+    ];
+
     const TRAFFIC_LOOP = [
         new THREE.Vector3(4, 0, 206),
         new THREE.Vector3(181, 0, 206),
@@ -1037,180 +1265,129 @@
         new THREE.Vector3(-180, 0, 206)
     ];
 
-    function spawnInitialEntities() {
-        // Véhicules garés prêts à être conduits
-        createVehicle(1, 22, -65, Math.PI / 2, false); // Coupé Sport devant le Palais des Papes
-        createVehicle(0, 48, 238, 0, false);          // Citadine Parking Gare Centre
-        createVehicle(3, 62, 238, 0, false);          // SUV Parking Gare Centre
-        createVehicle(2, -165, 325, Math.PI, false);  // Berline Gare TGV
-        createVehicle(1, 235, 250, 0, false);         // Coupé Zone Commerciale
+    function createVehicle(typeIndex, x, z, rotationY = 0, isTraffic = false) {
+        const spec = VEHICLE_TYPES[typeIndex];
+        const group = new THREE.Group();
+        const bodyMat = new THREE.MeshStandardMaterial({ color: spec.color, roughness: 0.25, metalness: 0.65 });
+        const glassMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.1, metalness: 0.9 });
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.85 });
 
-        // Circulation IA
-        for (let i = 0; i < 8; i++) {
-            const wp = TRAFFIC_LOOP[i % TRAFFIC_LOOP.length];
-            const type = i % 4;
-            createVehicle(type, wp.x + (Math.random() - 0.5) * 15, wp.z + (Math.random() - 0.5) * 15, 0, true);
+        const chassis = new THREE.Mesh(new THREE.BoxGeometry(spec.w, spec.h * 0.55, spec.d), bodyMat);
+        chassis.position.y = 0.65; chassis.castShadow = true; chassis.receiveShadow = true; group.add(chassis);
+
+        const cabin = new THREE.Mesh(new THREE.BoxGeometry(spec.w * 0.84, spec.h * 0.48, spec.d * 0.54), glassMat);
+        cabin.position.set(0, 0.65 + spec.h * 0.45, -0.15); cabin.castShadow = true; group.add(cabin);
+
+        let sirenBlue = null, sirenRed = null;
+        if (spec.isPolice) {
+            const stripe = new THREE.Mesh(new THREE.BoxGeometry(spec.w + 0.04, 0.25, spec.d * 0.95), new THREE.MeshBasicMaterial({ color: 0x1d4ed8 }));
+            stripe.position.y = 0.68; group.add(stripe);
+            sirenBlue = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.18, 0.25), new THREE.MeshBasicMaterial({ color: 0x0088ff }));
+            sirenBlue.position.set(-0.35, 0.65 + spec.h * 0.72, -0.15); group.add(sirenBlue);
+            sirenRed = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.18, 0.25), new THREE.MeshBasicMaterial({ color: 0xff1111 }));
+            sirenRed.position.set(0.35, 0.65 + spec.h * 0.72, -0.15); group.add(sirenRed);
         }
 
-        // Voitures de Police en patrouille
+        const wheels = [];
+        const wheelGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.32, 14);
+        wheelGeo.rotateZ(Math.PI / 2);
+        [[-spec.w / 2 - 0.05, 0.42, spec.d * 0.32], [spec.w / 2 + 0.05, 0.42, spec.d * 0.32],
+         [-spec.w / 2 - 0.05, 0.42, -spec.d * 0.32], [spec.w / 2 + 0.05, 0.42, -spec.d * 0.32]].forEach(o => {
+            const wm = new THREE.Mesh(wheelGeo, wheelMat);
+            wm.position.set(o[0], o[1], o[2]); wm.castShadow = true; group.add(wm); wheels.push(wm);
+        });
+
+        group.position.set(x, 0, z); group.rotation.y = rotationY;
+        scene.add(group);
+
+        const carObj = {
+            mesh: group, spec, speed: 0, wheels, isTraffic, isPolice: !!spec.isPolice,
+            sirenBlue, sirenRed, waypointIndex: Math.floor(Math.random() * TRAFFIC_LOOP.length)
+        };
+        vehicles.push(carObj);
+        return carObj;
+    }
+
+    function spawnInitialEntities() {
+        createVehicle(1, 22, -65, Math.PI / 2, false);
+        createVehicle(0, 22, 195, -Math.PI / 2, false);
+        createVehicle(3, 22, 202, -Math.PI / 2, false);
+        createVehicle(2, -205, 282, Math.PI, false);
+        createVehicle(1, 225, 215, 0, false);
+
+        for (let i = 0; i < 8; i++) {
+            const wp = TRAFFIC_LOOP[i % TRAFFIC_LOOP.length];
+            createVehicle(i % 4, wp.x + (Math.random() - 0.5) * 14, wp.z + (Math.random() - 0.5) * 14, 0, true);
+        }
         createVehicle(4, 100, 214, -Math.PI / 2, true);
         createVehicle(4, -80, 214, Math.PI / 2, true);
 
-        // Piétons & Citoyens d'Avignon
         const shirtColors = [0xe76f51, 0x2a9d8f, 0xe9c46a, 0xf4a261, 0x457b9d, 0x8d99ae];
         const pantsColors = [0x1d3557, 0x2b2d42, 0x6c757d, 0x3d405b];
-        const npcZones = [
-            { x: 0, z: -60, r: 35 },    // Parvis Palais des Papes
-            { x: 0, z: -15, r: 30 },    // Place de l'Horloge
-            { x: 0, z: 100, r: 15 },    // Rue de la République
-            { x: 0, z: 230, r: 25 },    // Gare Centre
-            { x: -185, z: 330, r: 25 }, // Gare TGV
-            { x: 245, z: 260, r: 30 }   // Zone Commerciale
+        const zones = [
+            { x: 0, z: -60, r: 30 }, { x: 0, z: -15, r: 25 }, { x: 8, z: 90, r: 12 },
+            { x: 0, z: 225, r: 20 }, { x: -205, z: 285, r: 20 }, { x: 230, z: 220, r: 25 }
         ];
 
         for (let i = 0; i < 28; i++) {
-            const zone = npcZones[i % npcZones.length];
-            const isCop = i % 9 === 0;
-            const mesh = createHumanoidMesh(
-                isCop ? 0x1e3a8a : shirtColors[i % shirtColors.length],
-                isCop ? 0x0f172a : pantsColors[i % pantsColors.length],
-                0xe8b48a,
-                isCop
-            );
-            const nx = zone.x + (Math.random() - 0.5) * zone.r;
-            const nz = zone.z + (Math.random() - 0.5) * zone.r;
+            const z = zones[i % zones.length];
+            const isCop = i % 8 === 0;
+            const mesh = createRealisticCharacter({
+                shirtColor: isCop ? 0x1e3a8a : shirtColors[i % shirtColors.length],
+                pantsColor: isCop ? 0x0f172a : pantsColors[i % pantsColors.length],
+                isPolice: isCop
+            });
+            const nx = z.x + (Math.random() - 0.5) * z.r, nz = z.z + (Math.random() - 0.5) * z.r;
             mesh.position.set(nx, 0, nz);
             scene.add(mesh);
-
             npcs.push({
-                mesh,
-                homeX: zone.x,
-                homeZ: zone.z,
-                radius: zone.r,
-                angle: Math.random() * Math.PI * 2,
-                speed: 1.8 + Math.random() * 1.2,
-                isPolice: isCop,
-                walkCycle: Math.random() * 10,
-                dialogue: isCop
-                    ? "Circulez citoyen, tout est calme dans la cité des Papes."
-                    : [
-                        "Quel soleil magnifique sur le Palais des Papes aujourd'hui !",
-                        "Vous avez vu le Pont d'Avignon ? Dommage qu'il s'arrête au milieu du Rhône !",
-                        "La Place de l'Horloge est toujours animée à cette heure.",
-                        "Si vous cherchez une voiture rapide, allez voir près du parvis."
-                    ][i % 4]
+                mesh, homeX: z.x, homeZ: z.z, baseY: 0, radius: z.r, angle: Math.random() * Math.PI * 2,
+                speed: 1.9 + Math.random() * 1.1, hp: 100, dead: false, isPolice: isCop, walkCycle: Math.random() * 10,
+                dialogue: isCop ? "Attention à la vitesse dans les rues d'Avignon !" : "Des armes brillent au sol près des places et monuments."
             });
         }
     }
 
     // =========================================================================
-    // 7. SYSTÈME DE MISSIONS PRINCIPALES & SECONDAIRES
-    // =========================================================================
-    const MAIN_MISSIONS = [
-        {
-            title: "Bienvenue en Cité Papale",
-            desc: "Rejoignez le point de rendez-vous sur le Parvis du Palais des Papes.",
-            target: new THREE.Vector3(0, 0, -82),
-            reward: 500
-        },
-        {
-            title: "Sur le Pont d'Avignon",
-            desc: "Rendez-vous au bout du célèbre Pont Saint-Bénézet au-dessus du Rhône.",
-            target: new THREE.Vector3(-255, 6.5, -165),
-            reward: 800
-        },
-        {
-            title: "Express Gare TGV",
-            desc: "Prenez un véhicule et rejoignez le parvis de la Gare Avignon TGV au Sud-Ouest.",
-            target: new THREE.Vector3(-185, 0, 325),
-            reward: 1200
-        },
-        {
-            title: "Livraison Mistral 7",
-            desc: "Foncez vers la Zone Commerciale Sud-Est pour livrer le colis VIP.",
-            target: new THREE.Vector3(245, 0, 260),
-            reward: 1500
-        },
-        {
-            title: "Panorama du Rocher des Doms",
-            desc: "Montez admirer la vue depuis le sommet du Rocher des Doms.",
-            target: new THREE.Vector3(-45, 24, -225),
-            reward: 2500
-        }
-    ];
-
-    // Balise 3D lumineuse de mission
-    const beaconGroup = new THREE.Group();
-    const beaconCylinder = new THREE.Mesh(
-        new THREE.CylinderGeometry(2.2, 2.2, 60, 16, 1, true),
-        new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
-    );
-    beaconCylinder.position.y = 30;
-    beaconGroup.add(beaconCylinder);
-
-    const beaconRing = new THREE.Mesh(
-        new THREE.RingGeometry(1.8, 2.5, 24),
-        new THREE.MeshBasicMaterial({ color: 0xfbbf24, side: THREE.DoubleSide })
-    );
-    beaconRing.rotation.x = Math.PI / 2;
-    beaconRing.position.y = 0.25;
-    beaconGroup.add(beaconRing);
-    scene.add(beaconGroup);
-
-    function updateMissionMarker() {
-        const m = MAIN_MISSIONS[GameState.activeMissionIndex % MAIN_MISSIONS.length];
-        beaconGroup.position.copy(m.target);
-        document.getElementById('mission-title').textContent = m.title;
-        document.getElementById('mission-desc').textContent = m.desc;
-        document.getElementById('mission-reward').textContent = `+${m.reward} €`;
-    }
-
-    function showNotification(text) {
-        const banner = document.getElementById('notification-banner');
-        banner.textContent = text;
-        banner.classList.remove('hidden');
-        clearTimeout(banner._timeout);
-        banner._timeout = setTimeout(() => {
-            banner.classList.add('hidden');
-        }, 3800);
-    }
-
-    // =========================================================================
-    // 8. CONTRÔLES CLAVIER / SOURIS & INTERACTIONS
+    // 7. CONTRÔLES & BOUCLE DE JEU
     // =========================================================================
     const keys = {};
-    let cameraYaw = 0;
-    let cameraPitch = 0.28;
-    let isPointerLocked = false;
+    let cameraYaw = 0, cameraPitch = 0.28, isPointerLocked = false;
 
     window.addEventListener('keydown', e => {
-        const code = e.code;
-        keys[code] = true;
+        keys[e.code] = true;
+        if (GameState.inMenu) return;
 
-        if (code === 'Escape' || code === 'KeyP') {
-            if (GameState.started) togglePause();
-        }
-        if (code === 'KeyE' && GameState.started && !GameState.paused) {
-            handleActionKey();
-        }
-        if (code === 'KeyF' && GameState.started && !GameState.paused && !GameState.inVehicle) {
-            handleAttackOrInteract();
-        }
+        if (e.code === 'Escape' || e.code === 'KeyP') togglePause();
+        if (e.code === 'KeyE' && !GameState.paused) handleActionKey();
+        if (e.code === 'KeyF' && !GameState.paused) fireWeapon();
+        if (e.code === 'KeyR' && !GameState.paused) reloadWeapon();
+        if (e.code === 'Digit1') equipWeapon(0);
+        if (e.code === 'Digit2') equipWeapon(1);
+        if (e.code === 'Digit3') equipWeapon(2);
+        if (e.code === 'Digit4') equipWeapon(3);
     });
 
-    window.addEventListener('keyup', e => {
-        keys[e.code] = false;
-    });
+    window.addEventListener('keyup', e => { keys[e.code] = false; });
 
     document.addEventListener('mousemove', e => {
-        if (!isPointerLocked || GameState.paused) return;
+        if (!isPointerLocked || GameState.paused || GameState.inMenu) return;
         cameraYaw -= e.movementX * 0.0024;
         cameraPitch = Math.max(-0.15, Math.min(1.15, cameraPitch + e.movementY * 0.0022));
     });
 
-    renderer.domElement.addEventListener('click', () => {
-        if (GameState.started && !GameState.paused && !isPointerLocked) {
-            renderer.domElement.requestPointerLock();
+    window.addEventListener('mousedown', e => {
+        if (GameState.inMenu || GameState.paused) return;
+        if (!isPointerLocked) renderer.domElement.requestPointerLock();
+        else if (e.button === 0) fireWeapon();
+    });
+
+    window.addEventListener('wheel', e => {
+        if (GameState.inMenu || GameState.paused) return;
+        const dir = e.deltaY > 0 ? 1 : -1;
+        for (let i = 1; i <= 4; i++) {
+            const next = (GameState.currentWeaponSlot + dir * i + 4) % 4;
+            if (GameState.unlockedWeapons[next]) { equipWeapon(next); break; }
         }
     });
 
@@ -1219,7 +1396,6 @@
     });
 
     function handleActionKey() {
-        // 1. Sortir du véhicule si dedans
         if (GameState.inVehicle) {
             const car = GameState.inVehicle;
             const exitOffset = new THREE.Vector3(-2.4, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), car.mesh.rotation.y);
@@ -1231,112 +1407,73 @@
             return;
         }
 
-        // 2. Entrer dans un véhicule proche
-        let closestCar = null;
-        let minCarDist = 4.5;
+        let closestCar = null, minCarDist = 4.6;
         vehicles.forEach(car => {
             const d = player.pos.distanceTo(car.mesh.position);
-            if (d < minCarDist) {
-                minCarDist = d;
-                closestCar = car;
-            }
+            if (d < minCarDist) { minCarDist = d; closestCar = car; }
         });
 
         if (closestCar) {
             GameState.inVehicle = closestCar;
-            closestCar.isTraffic = false; // Le joueur prend le contrôle
+            closestCar.isTraffic = false;
             player.mesh.visible = false;
             document.getElementById('hud-bottom-right').classList.remove('hidden');
             document.getElementById('vehicle-name').textContent = closestCar.spec.name;
-            if (closestCar.isPolice) {
-                increaseWanted(1);
-                showNotification("ALERTE : Vol d'un véhicule de Police !");
-            }
+            if (closestCar.isPolice) { increaseWanted(1); showNotification("ALERTE : Véhicule de Police !"); }
             return;
         }
 
-        // 3. Vérifier Point de Sauvegarde proche
         for (const sp of savePoints) {
             if (Math.hypot(player.pos.x - sp.x, player.pos.z - sp.z) < 4.0) {
-                saveGame();
-                showNotification(`Partie sauvegardée (${sp.label}) !`);
-                return;
+                saveGame(); showNotification(`Sauvegardé (${sp.label}) !`); return;
             }
         }
 
-        // 4. Parler à un PNJ proche
         for (const npc of npcs) {
-            if (player.pos.distanceTo(npc.mesh.position) < 3.5) {
-                showNotification(`Habitante d'Avignon : "${npc.dialogue}"`);
-                return;
-            }
-        }
-    }
-
-    function handleAttackOrInteract() {
-        // Coup de poing / bousculade : augmente l'indice de recherche si devant témoins/police
-        player.mesh.userData.rightArm.rotation.x = -Math.PI / 2;
-        setTimeout(() => { player.mesh.userData.rightArm.rotation.x = 0; }, 220);
-
-        for (const npc of npcs) {
-            if (player.pos.distanceTo(npc.mesh.position) < 2.6) {
-                const push = npc.mesh.position.clone().sub(player.pos).normalize().multiplyScalar(3);
-                npc.mesh.position.add(push);
-                increaseWanted(npc.isPolice ? 2 : 1);
-                showNotification("Infraction signalée à la Police d'Avignon !");
-                break;
+            if (!npc.dead && player.pos.distanceTo(npc.mesh.position) < 3.5) {
+                showDialogue(npc.isPolice ? "POLICE" : "HABITANT", npc.dialogue); return;
             }
         }
     }
 
     function increaseWanted(amount) {
         GameState.wantedLevel = Math.min(5, GameState.wantedLevel + amount);
-        GameState.wantedTimer = 25; // 25 secondes sans crime pour perdre une étoile
-        updateWantedUI();
-    }
-
-    function updateWantedUI() {
-        document.querySelectorAll('#wanted-stars .star').forEach(star => {
-            const lvl = parseInt(star.dataset.level);
-            star.classList.toggle('active', lvl <= GameState.wantedLevel);
+        GameState.wantedTimer = 25;
+        document.querySelectorAll('#wanted-stars .star').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.level) <= GameState.wantedLevel);
         });
     }
 
-    // =========================================================================
-    // 9. COLLISIONS & DÉPLACEMENTS (JOUEUR + VÉHICULES)
-    // =========================================================================
+    function showNotification(text) {
+        const b = document.getElementById('notification-banner');
+        b.textContent = text; b.classList.remove('hidden');
+        clearTimeout(b._t);
+        b._t = setTimeout(() => b.classList.add('hidden'), 3600);
+    }
+
     function checkCollision(x, z, radius = 0.6) {
         if (Math.abs(x) > 580 || Math.abs(z) > 580) return true;
         for (let i = 0; i < colliders.length; i++) {
             const c = colliders[i];
-            if (x + radius > c.minX && x - radius < c.maxX &&
-                z + radius > c.minZ && z - radius < c.maxZ) {
-                return true;
-            }
+            if (x + radius > c.minX && x - radius < c.maxX && z + radius > c.minZ && z - radius < c.maxZ) return true;
         }
         return false;
     }
 
     function getGroundHeight(x, z) {
-        // Hauteur spéciale pour le Pont d'Avignon ou le Rocher des Doms
-        if (x >= -285 && x <= -190 && z >= -169 && z <= -161) {
-            if (x > -195) return Math.max(0, (-180 - x) * 0.43);
-            return 7.3;
-        }
-        if (x >= -80 && x <= -10 && z >= -250 && z <= -198) {
-            return 24.0;
-        }
+        if (x >= -285 && x <= -190 && z >= -169 && z <= -161) return x > -195 ? Math.max(0, (-180 - x) * 0.43) : 6.5;
+        if (x >= -84 && x <= -6 && z >= -254 && z <= -196) return 22.0;
         return 0;
     }
 
     function updatePlayer(dt) {
+        if (GameState.fireCooldown > 0) GameState.fireCooldown -= dt;
         if (GameState.inVehicle) return;
 
-        // Direction basée sur l'orientation caméra
         const forward = new THREE.Vector3(-Math.sin(cameraYaw), 0, -Math.cos(cameraYaw));
         const right = new THREE.Vector3(Math.cos(cameraYaw), 0, -Math.sin(cameraYaw));
-
         const moveDir = new THREE.Vector3();
+
         if (keys['KeyW'] || keys['ArrowUp']) moveDir.add(forward);
         if (keys['KeyS'] || keys['ArrowDown']) moveDir.sub(forward);
         if (keys['KeyA'] || keys['ArrowLeft']) moveDir.sub(right);
@@ -1344,64 +1481,87 @@
 
         const isMoving = moveDir.lengthSq() > 0.01;
         const isSprinting = isMoving && (keys['ShiftLeft'] || keys['ShiftRight']) && GameState.stamina > 2;
-
-        if (isSprinting) {
-            GameState.stamina = Math.max(0, GameState.stamina - 22 * dt);
-        } else {
-            GameState.stamina = Math.min(100, GameState.stamina + 14 * dt);
-        }
+        GameState.stamina = isSprinting ? Math.max(0, GameState.stamina - 22 * dt) : Math.min(100, GameState.stamina + 14 * dt);
 
         const speed = isSprinting ? GAME_CONFIG.sprintSpeed : GAME_CONFIG.playerSpeed;
-
         if (isMoving) {
             moveDir.normalize();
             const targetAngle = Math.atan2(moveDir.x, moveDir.z);
-            // Rotation fluide du personnage
             let diff = targetAngle - player.mesh.rotation.y;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
             player.mesh.rotation.y += diff * Math.min(1, 14 * dt);
 
-            const nextX = player.pos.x + moveDir.x * speed * dt;
-            const nextZ = player.pos.z + moveDir.z * speed * dt;
+            const nx = player.pos.x + moveDir.x * speed * dt;
+            const nz = player.pos.z + moveDir.z * speed * dt;
+            if (!checkCollision(nx, player.pos.z, 0.55)) player.pos.x = nx;
+            if (!checkCollision(player.pos.x, nz, 0.55)) player.pos.z = nz;
 
-            if (!checkCollision(nextX, player.pos.z, 0.55)) player.pos.x = nextX;
-            if (!checkCollision(player.pos.x, nextZ, 0.55)) player.pos.z = nextZ;
-
-            // Animation des membres
             player.walkCycle += dt * (isSprinting ? 14 : 9);
             const swing = Math.sin(player.walkCycle) * 0.65;
             player.mesh.userData.leftLeg.rotation.x = swing;
             player.mesh.userData.rightLeg.rotation.x = -swing;
             player.mesh.userData.leftArm.rotation.x = -swing * 0.8;
-            player.mesh.userData.rightArm.rotation.x = swing * 0.8;
+            if (GameState.currentWeaponSlot === 0) player.mesh.userData.rightArm.rotation.x = swing * 0.8;
         } else {
             player.mesh.userData.leftLeg.rotation.x = 0;
             player.mesh.userData.rightLeg.rotation.x = 0;
             player.mesh.userData.leftArm.rotation.x = 0;
         }
 
-        // Saut & Gravité
         const groundY = getGroundHeight(player.pos.x, player.pos.z);
-        if (keys['Space'] && player.onGround) {
-            player.vel.y = GAME_CONFIG.jumpForce;
-            player.onGround = false;
-        }
+        if (keys['Space'] && player.onGround) { player.vel.y = GAME_CONFIG.jumpForce; player.onGround = false; }
         player.vel.y += GAME_CONFIG.gravity * dt;
         player.pos.y += player.vel.y * dt;
-
-        if (player.pos.y <= groundY) {
-            player.pos.y = groundY;
-            player.vel.y = 0;
-            player.onGround = true;
-        }
-
+        if (player.pos.y <= groundY) { player.pos.y = groundY; player.vel.y = 0; player.onGround = true; }
         player.mesh.position.copy(player.pos);
+    }
+
+    function updateWeaponsAndBullets(dt) {
+        weaponPickups.forEach(wp => {
+            if (!wp.active) {
+                wp.respawnTimer -= dt;
+                if (wp.respawnTimer <= 0) { wp.active = true; wp.container.visible = true; }
+                return;
+            }
+            wp.model.rotation.y += 2.2 * dt;
+            wp.model.position.y = Math.sin(performance.now() * 0.004) * 0.14;
+
+            if (!GameState.inVehicle && Math.hypot(player.pos.x - wp.x, player.pos.z - wp.z) < 2.4 && Math.abs(player.pos.y - wp.y) < 2.5) {
+                const def = WEAPON_DEFS[wp.slot];
+                GameState.unlockedWeapons[wp.slot] = true;
+                GameState.ammoReserve[wp.slot] += def.maxClip * 2;
+                equipWeapon(wp.slot);
+                wp.active = false;
+                wp.container.visible = false;
+                wp.respawnTimer = 25;
+                showNotification(`ARME RAMASSÉE : ${def.name}`);
+            }
+        });
+
+        for (let i = bullets.length - 1; i >= 0; i--) {
+            const b = bullets[i];
+            b.mesh.position.addScaledVector(b.vel, dt);
+            b.life -= dt;
+
+            let hit = false;
+            for (const npc of npcs) {
+                if (!npc.dead && b.mesh.position.distanceTo(npc.mesh.position.clone().add(new THREE.Vector3(0, 1.3, 0))) < 1.15) {
+                    damageNPC(npc, b.damage, b.vel.clone().normalize().multiplyScalar(4), false);
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit || b.life <= 0 || checkCollision(b.mesh.position.x, b.mesh.position.z, 0.1)) {
+                scene.remove(b.mesh);
+                bullets.splice(i, 1);
+            }
+        }
     }
 
     function updateVehicles(dt) {
         vehicles.forEach(car => {
-            // Gyrophare police
             if (car.isPolice && car.sirenBlue && car.sirenRed) {
                 const active = GameState.wantedLevel > 0 || car === GameState.inVehicle;
                 const flash = Math.sin(performance.now() * 0.015) > 0;
@@ -1410,106 +1570,70 @@
             }
 
             if (car === GameState.inVehicle) {
-                // CONDUITE PAR LE JOUEUR
                 const accelInput = (keys['KeyW'] || keys['ArrowUp'] ? 1 : 0) - (keys['KeyS'] || keys['ArrowDown'] ? 1 : 0);
                 const steerInput = (keys['KeyA'] || keys['ArrowLeft'] ? 1 : 0) - (keys['KeyD'] || keys['ArrowRight'] ? 1 : 0);
-                const handbrake = keys['Space'];
+                if (keys['Space']) car.speed *= Math.pow(0.08, dt);
+                else if (accelInput !== 0) car.speed += accelInput * car.spec.accel * dt;
+                else car.speed *= Math.pow(0.45, dt);
 
-                if (handbrake) {
-                    car.speed *= Math.pow(0.08, dt);
-                } else if (accelInput !== 0) {
-                    car.speed += accelInput * car.spec.accel * dt;
-                } else {
-                    car.speed *= Math.pow(0.45, dt); // Friction naturelle
-                }
-
-                car.speed = Math.max(-car.spec.maxSpeed * 0.4, Math.min(car.spec.maxSpeed, car.speed));
-
+                car.speed = Math.max(-car.spec.maxSpeed * 0.45, Math.min(car.spec.maxSpeed, car.speed));
                 if (Math.abs(car.speed) > 0.4) {
-                    const dirSign = car.speed >= 0 ? 1 : -1;
-                    car.mesh.rotation.y += steerInput * car.spec.turn * dirSign * dt * Math.min(1, Math.abs(car.speed) / 8);
-                }
-
-                const forward = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
-                const nextX = car.mesh.position.x + forward.x * car.speed * dt;
-                const nextZ = car.mesh.position.z + forward.z * car.speed * dt;
-
-                if (!checkCollision(nextX, nextZ, 1.5)) {
-                    car.mesh.position.x = nextX;
-                    car.mesh.position.z = nextZ;
-                } else {
-                    car.speed = -car.speed * 0.35; // Rebond léger
-                }
-
-                player.pos.copy(car.mesh.position);
-
-                // Compteur de vitesse KM/H
-                const kmh = Math.round(Math.abs(car.speed) * 3.4);
-                document.getElementById('speed-value').textContent = kmh;
-
-            } else if (car.isTraffic) {
-                // IA CIRCULATION & POURSUITE POLICE
-                let targetPos = TRAFFIC_LOOP[car.waypointIndex];
-                let desiredSpeed = 13 * GameState.trafficMultiplier;
-
-                if (car.isPolice && GameState.wantedLevel > 0) {
-                    targetPos = player.pos;
-                    desiredSpeed = 24 + GameState.wantedLevel * 2;
-                }
-
-                const toTarget = new THREE.Vector3().subVectors(targetPos, car.mesh.position);
-                toTarget.y = 0;
-                const dist = toTarget.length();
-
-                if (dist < 10 && !(car.isPolice && GameState.wantedLevel > 0)) {
-                    car.waypointIndex = (car.waypointIndex + 1) % TRAFFIC_LOOP.length;
-                }
-
-                // Vérifier feu rouge proche (sauf si police en poursuite)
-                let stopForLight = false;
-                if (!(car.isPolice && GameState.wantedLevel > 0)) {
-                    for (const tl of trafficLights) {
-                        if (tl.phase === 'RED' && Math.hypot(car.mesh.position.x - tl.x, car.mesh.position.z - tl.z) < 12) {
-                            stopForLight = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Éviter le joueur à pied
-                if (car.mesh.position.distanceTo(player.pos) < 6 && !GameState.inVehicle) {
-                    stopForLight = true;
-                }
-
-                const targetSpeed = stopForLight ? 0 : desiredSpeed;
-                car.speed += (targetSpeed - car.speed) * 3 * dt;
-
-                if (dist > 0.5) {
-                    const targetAngle = Math.atan2(toTarget.x, toTarget.z);
-                    let diff = targetAngle - car.mesh.rotation.y;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-                    car.mesh.rotation.y += diff * 3.5 * dt;
+                    car.mesh.rotation.y += steerInput * car.spec.turn * (car.speed >= 0 ? 1 : -1) * dt * Math.min(1, Math.abs(car.speed) / 8);
                 }
 
                 const fwd = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
                 const nx = car.mesh.position.x + fwd.x * car.speed * dt;
                 const nz = car.mesh.position.z + fwd.z * car.speed * dt;
-                if (!checkCollision(nx, nz, 1.5)) {
-                    car.mesh.position.x = nx;
-                    car.mesh.position.z = nz;
-                } else {
-                    car.waypointIndex = (car.waypointIndex + 1) % TRAFFIC_LOOP.length;
-                }
-            }
+                if (!checkCollision(nx, nz, 1.5)) { car.mesh.position.x = nx; car.mesh.position.z = nz; }
+                else car.speed = -car.speed * 0.35;
 
-            // Rotation des roues
+                // ÉCRASEMENT DE PNJ / ENNEMIS PAR LE VÉHICULE DU JOUEUR
+                if (Math.abs(car.speed) > 5.0) {
+                    for (const npc of npcs) {
+                        if (!npc.dead && Math.hypot(car.mesh.position.x - npc.mesh.position.x, car.mesh.position.z - npc.mesh.position.z) < 2.3) {
+                            const push = fwd.clone().multiplyScalar(Math.abs(car.speed) * 0.6);
+                            damageNPC(npc, 150, push, true);
+                            increaseWanted(npc.isPolice ? 2 : 1);
+                        }
+                    }
+                }
+
+                player.pos.copy(car.mesh.position);
+                document.getElementById('speed-value').textContent = Math.round(Math.abs(car.speed) * 3.4);
+            } else if (car.isTraffic) {
+                let targetPos = (car.isPolice && GameState.wantedLevel > 0) ? player.pos : TRAFFIC_LOOP[car.waypointIndex];
+                let desiredSpeed = (car.isPolice && GameState.wantedLevel > 0) ? (24 + GameState.wantedLevel * 2) : 13 * GameState.trafficMultiplier;
+                const toTarget = new THREE.Vector3().subVectors(targetPos, car.mesh.position); toTarget.y = 0;
+                const dist = toTarget.length();
+                if (dist < 10 && !(car.isPolice && GameState.wantedLevel > 0)) car.waypointIndex = (car.waypointIndex + 1) % TRAFFIC_LOOP.length;
+
+                let stop = false;
+                if (!(car.isPolice && GameState.wantedLevel > 0)) {
+                    for (const tl of trafficLights) {
+                        if (tl.phase === 'RED' && Math.hypot(car.mesh.position.x - tl.x, car.mesh.position.z - tl.z) < 12) { stop = true; break; }
+                    }
+                }
+                if (car.mesh.position.distanceTo(player.pos) < 6 && !GameState.inVehicle) stop = true;
+
+                car.speed += ((stop ? 0 : desiredSpeed) - car.speed) * 3 * dt;
+                if (dist > 0.5) {
+                    const ta = Math.atan2(toTarget.x, toTarget.z);
+                    let diff = ta - car.mesh.rotation.y;
+                    while (diff < -Math.PI) diff += Math.PI * 2;
+                    while (diff > Math.PI) diff -= Math.PI * 2;
+                    car.mesh.rotation.y += diff * 3.5 * dt;
+                }
+                const fwd = new THREE.Vector3(Math.sin(car.mesh.rotation.y), 0, Math.cos(car.mesh.rotation.y));
+                const nx = car.mesh.position.x + fwd.x * car.speed * dt;
+                const nz = car.mesh.position.z + fwd.z * car.speed * dt;
+                if (!checkCollision(nx, nz, 1.5)) { car.mesh.position.x = nx; car.mesh.position.z = nz; }
+                else car.waypointIndex = (car.waypointIndex + 1) % TRAFFIC_LOOP.length;
+            }
             car.wheels.forEach(w => { w.rotation.x += car.speed * dt * 1.8; });
         });
     }
 
-    function updateNPCsAndTrafficLights(dt) {
-        // Feux tricolores
+    function updateNPCsAndLights(dt) {
         trafficLights.forEach(tl => {
             tl.timer += dt;
             if (tl.timer > 8) {
@@ -1519,31 +1643,33 @@
             }
         });
 
-        // Piétons
         npcs.forEach(npc => {
+            if (npc.dead) return;
             npc.angle += (Math.random() - 0.5) * 1.4 * dt;
             const nx = npc.mesh.position.x + Math.sin(npc.angle) * npc.speed * dt;
             const nz = npc.mesh.position.z + Math.cos(npc.angle) * npc.speed * dt;
-
             if (Math.hypot(nx - npc.homeX, nz - npc.homeZ) > npc.radius || checkCollision(nx, nz, 0.5)) {
                 npc.angle += Math.PI * 0.75;
             } else {
-                npc.mesh.position.x = nx;
-                npc.mesh.position.z = nz;
-                npc.mesh.rotation.y = npc.angle;
+                npc.mesh.position.x = nx; npc.mesh.position.z = nz; npc.mesh.rotation.y = npc.angle;
             }
-
             npc.walkCycle += dt * 7;
-            const s = Math.sin(npc.walkCycle) * 0.45;
+            const s = Math.sin(npc.walkCycle) * 0.5;
             npc.mesh.userData.leftLeg.rotation.x = s;
             npc.mesh.userData.rightLeg.rotation.x = -s;
+            npc.mesh.userData.leftArm.rotation.x = -s * 0.6;
+            if (!npc.isTarget) npc.mesh.userData.rightArm.rotation.x = s * 0.6;
         });
     }
 
-    // =========================================================================
-    // 10. CAMÉRA TROISIÈME PERSONNE, CYCLE JOUR/NUIT & MÉTÉO
-    // =========================================================================
     function updateCamera(dt) {
+        if (GameState.inMenu) {
+            const t = performance.now() * 0.00018;
+            camera.position.set(Math.sin(t) * 95, 42, -95 + Math.cos(t) * 85);
+            camera.lookAt(0, 14, -135);
+            return;
+        }
+
         const targetPos = GameState.inVehicle ? GameState.inVehicle.mesh.position : player.pos;
         const dist = GameState.inVehicle ? GAME_CONFIG.carCameraDistance : GAME_CONFIG.cameraDistance;
         const height = GameState.inVehicle ? GAME_CONFIG.carCameraHeight : GAME_CONFIG.cameraHeight;
@@ -1557,22 +1683,11 @@
     }
 
     function updateEnvironment(dt) {
-        // Avancement de l'heure (1 minute réelle = ~1h en jeu)
-        if (GameState.weatherMode === 'auto') {
-            GameState.timeOfDay = (GameState.timeOfDay + dt * 0.04) % 24;
-        } else if (GameState.weatherMode === 'sunny') {
-            GameState.timeOfDay = 14.0;
-            GameState.currentWeather = 'Soleil Provençal';
-        } else if (GameState.weatherMode === 'sunset') {
-            GameState.timeOfDay = 19.3;
-            GameState.currentWeather = 'Heure Dorée';
-        } else if (GameState.weatherMode === 'night') {
-            GameState.timeOfDay = 23.0;
-            GameState.currentWeather = 'Nuit Étoilée';
-        } else if (GameState.weatherMode === 'rain') {
-            GameState.timeOfDay = 16.0;
-            GameState.currentWeather = 'Pluie Méditerranéenne';
-        }
+        if (GameState.weatherMode === 'auto') GameState.timeOfDay = (GameState.timeOfDay + dt * 0.04) % 24;
+        else if (GameState.weatherMode === 'sunny') { GameState.timeOfDay = 14.0; GameState.currentWeather = 'Soleil Provençal'; }
+        else if (GameState.weatherMode === 'sunset') { GameState.timeOfDay = 19.3; GameState.currentWeather = 'Coucher de Soleil'; }
+        else if (GameState.weatherMode === 'night') { GameState.timeOfDay = 23.0; GameState.currentWeather = 'Nuit Étoilée'; }
+        else if (GameState.weatherMode === 'rain') { GameState.timeOfDay = 16.0; GameState.currentWeather = 'Pluie'; }
 
         const isRain = GameState.weatherMode === 'rain';
         rainSystem.visible = isRain;
@@ -1586,14 +1701,11 @@
             posAttr.needsUpdate = true;
         }
 
-        // Calcul couleur ciel & soleil
         const h = GameState.timeOfDay;
         let skyColor, fogColor, sunIntensity, sunColor;
-
-        if (isRain) {
-            skyColor = 0x475569; fogColor = 0x475569; sunIntensity = 0.45; sunColor = 0x94a3b8;
-        } else if (h >= 6 && h < 18) {
-            skyColor = 0x5da9e9; fogColor = 0xcfe4f7; sunIntensity = 1.45; sunColor = 0xfff2d6;
+        if (isRain) { skyColor = 0x475569; fogColor = 0x475569; sunIntensity = 0.45; sunColor = 0x94a3b8; }
+        else if (h >= 6 && h < 18) {
+            skyColor = 0x5da9e9; fogColor = 0xcfe4f7; sunIntensity = 1.5; sunColor = 0xfff2d6;
             if (GameState.weatherMode === 'auto') GameState.currentWeather = 'Soleil Provençal';
         } else if (h >= 18 && h < 20.5) {
             skyColor = 0xe76f51; fogColor = 0xf4a261; sunIntensity = 1.1; sunColor = 0xff9e5e;
@@ -1603,100 +1715,72 @@
             if (GameState.weatherMode === 'auto') GameState.currentWeather = 'Nuit Claire';
         }
 
-        skyMat.color.setHex(skyColor);
-        scene.fog.color.setHex(fogColor);
-        sunLight.intensity = sunIntensity;
-        sunLight.color.setHex(sunColor);
-
-        // Suivi de l'ombre du soleil autour du joueur
+        skyMat.color.setHex(skyColor); scene.fog.color.setHex(fogColor);
+        sunLight.intensity = sunIntensity; sunLight.color.setHex(sunColor);
         sunLight.position.set(player.pos.x + 120, 200, player.pos.z + 90);
         sunLight.target.position.copy(player.pos);
 
-        // Lampadaires la nuit
         const isNight = h < 6.5 || h >= 19.5 || isRain;
         streetLights.forEach(b => { b.visible = isNight; });
 
-        // Mise à jour HUD Horloge
-        const hours = Math.floor(h).toString().padStart(2, '0');
-        const mins = Math.floor((h % 1) * 60).toString().padStart(2, '0');
-        document.getElementById('game-time').textContent = `${hours}:${mins}`;
+        document.getElementById('game-time').textContent = `${Math.floor(h).toString().padStart(2, '0')}:${Math.floor((h % 1) * 60).toString().padStart(2, '0')}`;
         document.getElementById('game-weather').textContent = GameState.currentWeather;
     }
 
-    // =========================================================================
-    // 11. GAMEPLAY, QUARTIERS, MINIMAP & SAUVEGARDE
-    // =========================================================================
     function updateGameplayAndHUD(dt) {
-        // Quartier actuel
-        let foundDistrict = "Avignon — Périphérie";
+        let foundDistrict = "Avignon";
         for (const d of districts) {
-            if (Math.hypot(player.pos.x - d.x, player.pos.z - d.z) <= d.r) {
-                foundDistrict = d.name;
-                break;
-            }
+            if (Math.hypot(player.pos.x - d.x, player.pos.z - d.z) <= d.r) { foundDistrict = d.name; break; }
         }
+        GameState.currentDistrict = foundDistrict;
         document.getElementById('district-badge').textContent = foundDistrict.toUpperCase();
 
-        // Vérification objectif mission principale
-        const m = MAIN_MISSIONS[GameState.activeMissionIndex % MAIN_MISSIONS.length];
-        beaconRing.rotation.z += 2 * dt;
-        if (Math.hypot(player.pos.x - m.target.x, player.pos.z - m.target.z) < 6.5) {
-            GameState.money += m.reward;
-            GameState.activeMissionIndex++;
-            showNotification(`MISSION ACCOMPLIE : ${m.title} (+${m.reward} €)`);
-            updateMissionMarker();
+        const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+        const step = m.steps[GameState.currentStepIdx];
+        if (step.type === "TIMED_GOTO") {
+            GameState.missionTimer -= dt;
+            if (GameState.missionTimer <= 0) {
+                showNotification("Temps écoulé ! Nouvelle tentative.");
+                startMissionStep();
+            }
         }
+        checkMissionCompletion();
+        updateMissionHUD();
 
-        // Décroissance indice de recherche
+        let promptText = null;
+        if (!GameState.inVehicle) {
+            for (const car of vehicles) {
+                if (player.pos.distanceTo(car.mesh.position) < 4.6) { promptText = `Appuyez sur <span>[E]</span> pour conduire (${car.spec.name})`; break; }
+            }
+            if (!promptText) {
+                for (const sp of savePoints) {
+                    if (Math.hypot(player.pos.x - sp.x, player.pos.z - sp.z) < 4.0) { promptText = `Appuyez sur <span>[E]</span> pour sauvegarder`; break; }
+                }
+            }
+            if (!promptText) {
+                for (const npc of npcs) {
+                    if (!npc.dead && player.pos.distanceTo(npc.mesh.position) < 3.5) { promptText = `Appuyez sur <span>[E]</span> pour parler`; break; }
+                }
+            }
+        }
+        const promptEl = document.getElementById('interaction-prompt');
+        if (promptText) { promptEl.innerHTML = promptText; promptEl.classList.remove('hidden'); }
+        else promptEl.classList.add('hidden');
+
         if (GameState.wantedLevel > 0) {
             GameState.wantedTimer -= dt;
             if (GameState.wantedTimer <= 0) {
                 GameState.wantedLevel--;
                 GameState.wantedTimer = 20;
-                updateWantedUI();
+                document.querySelectorAll('#wanted-stars .star').forEach(s => {
+                    s.classList.toggle('active', parseInt(s.dataset.level) <= GameState.wantedLevel);
+                });
             }
         }
 
-        // Prompts contextuels [E]
-        let promptText = null;
-        if (!GameState.inVehicle) {
-            for (const car of vehicles) {
-                if (player.pos.distanceTo(car.mesh.position) < 4.5) {
-                    promptText = `Appuyez sur <span>[E]</span> pour conduire (${car.spec.name})`;
-                    break;
-                }
-            }
-            if (!promptText) {
-                for (const sp of savePoints) {
-                    if (Math.hypot(player.pos.x - sp.x, player.pos.z - sp.z) < 4.0) {
-                        promptText = `Appuyez sur <span>[E]</span> pour sauvegarder la partie`;
-                        break;
-                    }
-                }
-            }
-            if (!promptText) {
-                for (const npc of npcs) {
-                    if (player.pos.distanceTo(npc.mesh.position) < 3.5) {
-                        promptText = `Appuyez sur <span>[E]</span> pour parler au passant`;
-                        break;
-                    }
-                }
-            }
-        }
-        const promptEl = document.getElementById('interaction-prompt');
-        if (promptText) {
-            promptEl.innerHTML = promptText;
-            promptEl.classList.remove('hidden');
-        } else {
-            promptEl.classList.add('hidden');
-        }
-
-        // Barres HUD
         document.getElementById('money-display').textContent = `${GameState.money.toLocaleString('fr-FR')} €`;
         document.getElementById('health-bar').style.width = `${GameState.health}%`;
         document.getElementById('stamina-bar').style.width = `${GameState.stamina}%`;
-
-        // Rotation cristaux de sauvegarde
         savePoints.forEach(sp => { sp.mesh.rotation.y += 2 * dt; });
 
         renderMinimap();
@@ -1706,152 +1790,183 @@
     const minimapCtx = minimapCanvas.getContext('2d');
 
     function renderMinimap() {
-        const w = minimapCanvas.width, h = minimapCanvas.height;
-        const scale = 0.42;
-        minimapCtx.clearRect(0, 0, w, h);
+        const w = minimapCanvas.width, h = minimapCanvas.height, scale = 0.42;
+        minimapCtx.fillStyle = '#1b263b'; minimapCtx.fillRect(0, 0, w, h);
+        minimapCtx.save(); minimapCtx.translate(w / 2, h / 2);
 
-        // Fond carte
-        minimapCtx.fillStyle = '#1b263b';
-        minimapCtx.fillRect(0, 0, w, h);
+        const px = player.pos.x, pz = player.pos.z;
+        minimapCtx.fillStyle = '#1e6091'; minimapCtx.fillRect((-455 - px) * scale, (-700 - pz) * scale, 260 * scale, 1400 * scale);
+        minimapCtx.fillStyle = '#415a77'; minimapCtx.fillRect((-185 - px) * scale, (-180 - pz) * scale, 355 * scale, 370 * scale);
+        minimapCtx.fillStyle = '#e0c097'; minimapCtx.fillRect((-37 - px) * scale, (-160 - pz) * scale, 74 * scale, 52 * scale);
 
-        minimapCtx.save();
-        minimapCtx.translate(w / 2, h / 2);
-
-        const px = player.pos.x;
-        const pz = player.pos.z;
-
-        // Le Rhône
-        minimapCtx.fillStyle = '#1e6091';
-        minimapCtx.fillRect((-455 - px) * scale, (-700 - pz) * scale, 260 * scale, 1400 * scale);
-
-        // Intra-Muros
-        minimapCtx.fillStyle = '#415a77';
-        minimapCtx.fillRect((-185 - px) * scale, (-180 - pz) * scale, 355 * scale, 370 * scale);
-
-        // Palais des Papes
-        minimapCtx.fillStyle = '#e0c097';
-        minimapCtx.fillRect((-37 - px) * scale, (-160 - pz) * scale, 74 * scale, 52 * scale);
-
-        // Pont d'Avignon
-        minimapCtx.fillStyle = '#d4a373';
-        minimapCtx.fillRect((-283 - px) * scale, (-168 - pz) * scale, 88 * scale, 7 * scale);
-
-        // Points de sauvegarde (Cyan)
-        minimapCtx.fillStyle = '#00e5ff';
-        savePoints.forEach(sp => {
-            minimapCtx.beginPath();
-            minimapCtx.arc((sp.x - px) * scale, (sp.z - pz) * scale, 3.5, 0, Math.PI * 2);
-            minimapCtx.fill();
+        // Armes au sol (Bleu ciel)
+        minimapCtx.fillStyle = '#38bdf8';
+        weaponPickups.forEach(wp => {
+            if (wp.active) minimapCtx.fillRect((wp.x - px) * scale - 2.5, (wp.z - pz) * scale - 2.5, 5, 5);
         });
 
-        // Véhicules (Blanc / Bleu Police)
+        // Véhicules
         vehicles.forEach(v => {
             minimapCtx.fillStyle = v.isPolice ? '#3b82f6' : '#cbd5e1';
             minimapCtx.fillRect((v.mesh.position.x - px) * scale - 2, (v.mesh.position.z - pz) * scale - 2, 4, 4);
         });
 
-        // Objectif Mission (Jaune doré)
-        const m = MAIN_MISSIONS[GameState.activeMissionIndex % MAIN_MISSIONS.length];
+        // Objectif Mission (Jaune)
+        const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+        const step = m.steps[GameState.currentStepIdx];
         minimapCtx.fillStyle = '#fbbf24';
-        minimapCtx.beginPath();
-        minimapCtx.arc((m.target.x - px) * scale, (m.target.z - pz) * scale, 5.5, 0, Math.PI * 2);
-        minimapCtx.fill();
+        minimapCtx.beginPath(); minimapCtx.arc((step.pos.x - px) * scale, (step.pos.z - pz) * scale, 5.5, 0, Math.PI * 2); minimapCtx.fill();
 
-        // Joueur au centre (Flèche)
+        // Joueur (Rouge)
         minimapCtx.fillStyle = '#ef4444';
-        minimapCtx.beginPath();
-        minimapCtx.arc(0, 0, 4.5, 0, Math.PI * 2);
-        minimapCtx.fill();
-
+        minimapCtx.beginPath(); minimapCtx.arc(0, 0, 4.5, 0, Math.PI * 2); minimapCtx.fill();
         minimapCtx.restore();
     }
 
     // =========================================================================
-    // 12. INTERFACE UTILISATEUR, PAUSE, PARAMÈTRES & SAUVEGARDE LOCALE
+    // 8. MENU PRINCIPAL, MISSIONS & SAUVEGARDE
     // =========================================================================
+    function populateMissionJournal() {
+        const container = document.getElementById('mission-list-container');
+        container.innerHTML = '';
+        MISSIONS.forEach((m, idx) => {
+            const isDone = GameState.completedMissions.includes(m.id);
+            const isCurrent = (GameState.currentMissionIdx % MISSIONS.length) === idx;
+            const card = document.createElement('div');
+            card.className = `mission-card ${isCurrent ? 'current' : ''} ${isDone ? 'done' : ''}`;
+            card.innerHTML = `
+                <div class="mc-header">
+                    <span>${isDone ? '✓ TERMINÉE' : (isCurrent ? '▶ ACTIVE' : 'LANCER')}</span>
+                    <strong>+${m.reward} €</strong>
+                </div>
+                <h3>${m.title}</h3>
+                <p>${m.summary}</p>
+            `;
+            card.addEventListener('click', () => {
+                GameState.currentMissionIdx = idx;
+                GameState.currentStepIdx = 0;
+                startMissionStep();
+                populateMissionJournal();
+                enterGame();
+                showNotification(`Mission lancée : ${m.title}`);
+            });
+            container.appendChild(card);
+        });
+    }
+
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+            if (btn.dataset.tab === 'tab-missions') populateMissionJournal();
+        });
+    });
+
+    function enterGame() {
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('hud').classList.remove('hidden');
+        GameState.inMenu = false;
+        GameState.paused = false;
+        renderer.domElement.requestPointerLock();
+        startMissionStep();
+    }
+
+    document.getElementById('btn-start-new').addEventListener('click', () => {
+        GameState.money = 1500;
+        GameState.currentMissionIdx = 0;
+        GameState.currentStepIdx = 0;
+        GameState.completedMissions = [];
+        GameState.unlockedWeapons = [true, false, false, false];
+        equipWeapon(0);
+        player.pos.set(0, 0, -45);
+        enterGame();
+    });
+
+    document.getElementById('btn-continue').addEventListener('click', () => {
+        loadGame();
+        enterGame();
+    });
+
     function togglePause() {
         GameState.paused = !GameState.paused;
-        const pauseScreen = document.getElementById('pause-screen');
+        const ps = document.getElementById('pause-screen');
         if (GameState.paused) {
-            pauseScreen.classList.remove('hidden');
+            const m = MISSIONS[GameState.currentMissionIdx % MISSIONS.length];
+            document.getElementById('pause-mission-info').textContent = `${m.title} — ${m.steps[GameState.currentStepIdx].desc}`;
+            ps.classList.remove('hidden');
             if (document.pointerLockElement) document.exitPointerLock();
         } else {
-            pauseScreen.classList.add('hidden');
+            ps.classList.add('hidden');
         }
     }
 
+    document.getElementById('btn-resume').addEventListener('click', () => { togglePause(); renderer.domElement.requestPointerLock(); });
+    document.getElementById('btn-save-now').addEventListener('click', () => { saveGame(); showNotification("Partie sauvegardée !"); });
+    document.getElementById('btn-respawn').addEventListener('click', () => {
+        if (GameState.inVehicle) { player.mesh.visible = true; GameState.inVehicle = null; document.getElementById('hud-bottom-right').classList.add('hidden'); }
+        player.pos.set(0, 0, -15);
+        togglePause();
+    });
+
+    document.getElementById('btn-back-main-menu').addEventListener('click', () => {
+        saveGame();
+        GameState.paused = false;
+        GameState.inMenu = true;
+        document.getElementById('pause-screen').classList.add('hidden');
+        document.getElementById('hud').classList.add('hidden');
+        document.getElementById('main-menu').classList.remove('hidden');
+        refreshMenuStats();
+    });
+
     function saveGame() {
-        const data = {
+        localStorage.setItem('avignon_city_v3', JSON.stringify({
             money: GameState.money,
-            activeMissionIndex: GameState.activeMissionIndex,
+            currentMissionIdx: GameState.currentMissionIdx,
+            completedMissions: GameState.completedMissions,
+            unlockedWeapons: GameState.unlockedWeapons,
             pos: { x: player.pos.x, y: player.pos.y, z: player.pos.z }
-        };
-        localStorage.setItem('avignon_city_save', JSON.stringify(data));
+        }));
     }
 
     function loadGame() {
-        const raw = localStorage.getItem('avignon_city_save');
-        if (!raw) return;
+        const raw = localStorage.getItem('avignon_city_v3');
+        if (!raw) return false;
         try {
-            const data = JSON.parse(raw);
-            GameState.money = data.money ?? 1250;
-            GameState.activeMissionIndex = data.activeMissionIndex ?? 0;
-            if (data.pos) player.pos.set(data.pos.x, data.pos.y, data.pos.z);
-        } catch (e) {}
+            const d = JSON.parse(raw);
+            GameState.money = d.money ?? 1500;
+            GameState.currentMissionIdx = d.currentMissionIdx ?? 0;
+            GameState.completedMissions = d.completedMissions ?? [];
+            GameState.unlockedWeapons = d.unlockedWeapons ?? [true, false, false, false];
+            if (d.pos) player.pos.set(d.pos.x, d.pos.y, d.pos.z);
+            updateWeaponHUD();
+            return true;
+        } catch (e) { return false; }
     }
 
-    document.getElementById('btn-play').addEventListener('click', () => {
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('hud').classList.remove('hidden');
-        GameState.started = true;
-        renderer.domElement.requestPointerLock();
-        showNotification("Bienvenue à Avignon ! Explorez la cité ou suivez le faisceau doré.");
-    });
-
-    document.getElementById('btn-resume').addEventListener('click', () => {
-        togglePause();
-        renderer.domElement.requestPointerLock();
-    });
-
-    document.getElementById('btn-save-now').addEventListener('click', () => {
-        saveGame();
-        showNotification("Progression sauvegardée dans le navigateur !");
-    });
-
-    document.getElementById('btn-respawn').addEventListener('click', () => {
-        if (GameState.inVehicle) {
-            player.mesh.visible = true;
-            GameState.inVehicle = null;
-            document.getElementById('hud-bottom-right').classList.add('hidden');
+    function refreshMenuStats() {
+        const hasSave = loadGame();
+        const unlockedCount = GameState.unlockedWeapons.filter(Boolean).length;
+        document.getElementById('menu-stat-money').textContent = `${GameState.money.toLocaleString('fr-FR')} €`;
+        document.getElementById('menu-stat-missions').textContent = `${GameState.completedMissions.length} / ${MISSIONS.length}`;
+        document.getElementById('menu-stat-weapons').textContent = `${unlockedCount} / 4`;
+        if (hasSave) {
+            document.getElementById('btn-continue').classList.remove('hidden');
+            document.getElementById('save-status-badge').textContent = "SAUVEGARDE DISPONIBLE";
         }
-        player.pos.set(0, 0, -25);
-        togglePause();
-        showNotification("Téléporté sur la Place de l'Horloge.");
-    });
+    }
 
-    document.getElementById('gfx-quality').addEventListener('change', e => {
+    document.getElementById('menu-gfx-quality').addEventListener('change', e => {
         const val = e.target.value;
-        GameState.gfxQuality = val;
-        if (val === 'low') {
-            renderer.shadowMap.enabled = false;
-            renderer.setPixelRatio(1);
-        } else if (val === 'medium') {
-            renderer.shadowMap.enabled = true;
-            sunLight.shadow.mapSize.set(1024, 1024);
-            renderer.setPixelRatio(1.25);
-        } else {
-            renderer.shadowMap.enabled = true;
-            sunLight.shadow.mapSize.set(2048, 2048);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        }
+        if (val === 'low') { renderer.shadowMap.enabled = false; renderer.setPixelRatio(1); }
+        else if (val === 'medium') { renderer.shadowMap.enabled = true; sunLight.shadow.mapSize.set(1024, 1024); renderer.setPixelRatio(1.25); }
+        else { renderer.shadowMap.enabled = true; sunLight.shadow.mapSize.set(2048, 2048); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); }
         scene.traverse(obj => { if (obj.material) obj.material.needsUpdate = true; });
     });
 
-    document.getElementById('weather-select').addEventListener('change', e => {
-        GameState.weatherMode = e.target.value;
-    });
-
-    document.getElementById('traffic-density').addEventListener('change', e => {
+    document.getElementById('menu-weather').addEventListener('change', e => { GameState.weatherMode = e.target.value; });
+    document.getElementById('menu-traffic').addEventListener('change', e => {
         const v = e.target.value;
         GameState.trafficMultiplier = v === 'low' ? 0.5 : (v === 'high' ? 1.4 : 1.0);
     });
@@ -1862,14 +1977,12 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // =========================================================================
-    // 13. BOUCLE PRINCIPALE (60 FPS)
-    // =========================================================================
     buildAvignonWorld();
     initPlayer();
-    loadGame();
     spawnInitialEntities();
-    updateMissionMarker();
+    spawnGroundWeapons();
+    refreshMenuStats();
+    populateMissionJournal();
 
     let lastTime = performance.now();
     function animate(now) {
@@ -1877,13 +1990,17 @@
         const dt = Math.min(0.05, (now - lastTime) / 1000);
         lastTime = now;
 
-        if (GameState.started && !GameState.paused) {
-            updatePlayer(dt);
+        if (!GameState.paused) {
             updateVehicles(dt);
-            updateNPCsAndTrafficLights(dt);
-            updateCamera(dt);
+            updateNPCsAndLights(dt);
+            updateWeaponsAndBullets(dt);
             updateEnvironment(dt);
-            updateGameplayAndHUD(dt);
+            updateCamera(dt);
+
+            if (!GameState.inMenu) {
+                updatePlayer(dt);
+                updateGameplayAndHUD(dt);
+            }
         }
 
         renderer.render(scene, camera);
